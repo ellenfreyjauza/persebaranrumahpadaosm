@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebGIS Bangunan House</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --primary-dark: #0b5ed7;
+      --accent: #f97316;
+      --accent-dark: #c2410c;
+      --soft-bg: #f4f7fb;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --shadow-hover: 0 16px 40px rgba(15, 23, 42, 0.14);
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(13,110,253,0.06), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(249,115,22,0.06), transparent 22%),
+        var(--soft-bg);
+      margin: 0;
+      padding: 0;
+      padding-top: 56px;
+      color: var(--text-dark);
+    }
+
+    .navbar {
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+      backdrop-filter: blur(8px);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(13,110,253,0.95), rgba(11,94,215,0.92)),
+        linear-gradient(45deg, rgba(255,255,255,0.04), transparent 50%);
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      position: relative;
+      top: 0;
+      z-index: 1;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      box-shadow: 0 8px 22px rgba(13, 110, 253, 0.16);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.14), transparent 20%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.10), transparent 22%);
+      pointer-events: none;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 0.84rem;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+
+    .hero h1 {
+      font-size: 1.65rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      margin-bottom: 0;
+      font-size: 0.95rem;
+      opacity: 0.96;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .hero-stat {
+      min-width: 120px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(5px);
+    }
+
+    .hero-stat .number {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .hero-stat .label {
+      font-size: 0.78rem;
+      opacity: 0.92;
+    }
+
+    .content-section {
+      margin: 30px 0;
+    }
+
+    .info-box,
+    .map-box,
+    .mini-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow-soft);
+      padding: 20px;
+      height: 100%;
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(10px);
+      transition: all 0.25s ease;
+    }
+
+    .info-box:hover,
+    .map-box:hover,
+    .mini-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .info-box h4,
+    .map-box h4 {
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .section-title i {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      color: var(--primary);
+      background: linear-gradient(135deg, rgba(13,110,253,0.12), rgba(249,115,22,0.10));
+    }
+
+    .info-box ol {
+      padding-left: 18px;
+    }
+
+    .info-box li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .info-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .mini-card {
+      padding: 14px 16px;
+    }
+
+    .mini-card small {
+      display: block;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .mini-card strong {
+      color: var(--text-dark);
+    }
+
+    .status-box {
+      margin-top: 15px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      background: #fff3cd;
+      color: #664d03;
+      border: 1px solid #ffecb5;
+      line-height: 1.6;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .quick-actions .btn {
+      border-radius: 12px;
+      font-weight: 600;
+      padding: 10px 12px;
+    }
+
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .map-header-text p {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eef4ff;
+      color: var(--primary-dark);
+      border: 1px solid rgba(13,110,253,0.1);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .map-wrapper {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #dbeafe;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    #map {
+      width: 100%;
+      height: 600px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .btn-fly {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+      font-weight: 700;
+    }
+
+    .toolbar {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 210px;
+    }
+
+    .toolbar-box,
+    .overlay-card {
+      background: rgba(255,255,255,0.95);
+      padding: 12px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+      border: 1px solid rgba(255,255,255,0.65);
+      backdrop-filter: blur(8px);
+    }
+
+    .toolbar-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #374151;
+      margin-bottom: 8px;
+      letter-spacing: 0.4px;
+    }
+
+    .toolbar-buttons {
+      display: grid;
+      gap: 8px;
+    }
+
+    .toolbar-buttons .btn {
+      border-radius: 10px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 12px 14px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+      font-size: 14px;
+      line-height: 1.6;
+      border: 1px solid rgba(255,255,255,0.65);
+    }
+
+    .legend-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .legend-color {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      margin-right: 8px;
+      background-color: #f97316;
+      border: 1px solid #c2410c;
+      vertical-align: middle;
+      border-radius: 4px;
+    }
+
+    .map-overlay-right {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 260px;
+    }
+
+    .overlay-card h6 {
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .stat-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+    }
+
+    .stat-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .stat-line strong {
+      color: var(--primary-dark);
+    }
+
+    .mouse-position {
+      color: #374151;
+      font-size: 0.9rem;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(4px);
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loading-box {
+      background: white;
+      border-radius: 18px;
+      padding: 22px 24px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+      min-width: 240px;
+      text-align: center;
+    }
+
+    .custom-popup .mapboxgl-popup-content {
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 14px 34px rgba(15,23,42,0.18);
+    }
+
+    .popup-card {
+      min-width: 220px;
+      font-family: Arial, sans-serif;
+    }
+
+    .popup-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 12px 14px;
+      font-weight: 700;
+    }
+
+    .popup-body {
+      padding: 14px;
+      background: white;
+    }
+
+    .popup-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px dashed #e5e7eb;
+      font-size: 0.92rem;
+    }
+
+    .popup-item:last-child {
+      border-bottom: none;
+    }
+
+    .popup-key {
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .popup-value {
+      text-align: right;
+      color: #111827;
+      word-break: break-word;
+    }
+
+    footer {
+      background-color: #212529;
+      color: white;
+      text-align: center;
+      padding: 14px 10px;
+      margin-top: 30px;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+    }
+
+    @media (max-width: 991.98px) {
+      .hero {
+        padding: 26px 16px;
+      }
+
+      .hero h1 {
+        font-size: 1.45rem;
+      }
+
+      .toolbar,
+      .map-overlay-right {
+        position: static;
+        width: auto;
+        margin: 12px;
+      }
+
+      #map {
+        height: 560px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      body {
+        padding-top: 54px;
+      }
+
+      .hero {
+        padding: 22px 14px;
+      }
+
+      .hero h1 {
+        font-size: 1.2rem;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+
+      #map {
+        height: 500px;
+      }
+
+      .legend {
+        bottom: 12px;
+        left: 12px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fa-solid fa-map-location-dot me-2"></i>WebGIS House
+      </a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <i class="fa-solid fa-layer-group"></i>
+        Visualisasi Spasial House
+      </div>
+      <h1>Peta Sebaran Bangunan House</h1>
+      <p>Visualisasi hasil digitasi bangunan house berbasis WebGIS</p>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="number" id="heroFeatureCount">0</span>
+          <span class="label">Jumlah Feature</span>
+        </div>
+        <div class="hero-stat">
+          <span class="number">Polygon</span>
+          <span class="label">Geometri</span>
+        </div>
+        <div class="hero-stat">
+          <span class="number">House</span>
+          <span class="label">Layer</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container content-section">
+    <div class="row g-4">
+      <div class="col-lg-3">
+        <div class="info-box">
+          <div class="section-title">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Petunjuk</span>
+          </div>
+
+          <ol>
+            <li>Gunakan scroll mouse untuk zoom in dan zoom out.</li>
+            <li>Klik dan tahan peta untuk menggeser tampilan.</li>
+            <li>Klik polygon bangunan untuk melihat atribut.</li>
+            <li>Tekan tombol <b>Kembali ke Lokasi</b> untuk kembali ke area data.</li>
+          </ol>
+
+          <hr>
+
+          <div class="section-title">
+            <i class="fa-solid fa-database"></i>
+            <span>Informasi Layer</span>
+          </div>
+
+          <div class="info-grid">
+            <div class="mini-card">
+              <small>Nama Layer</small>
+              <strong>House</strong>
+            </div>
+            <div class="mini-card">
+              <small>Geometri</small>
+              <strong>Polygon</strong>
+            </div>
+            <div class="mini-card">
+              <small>Keterangan</small>
+              <strong>House</strong>
+            </div>
+          </div>
+
+          <div id="status" class="status-box mt-3">
+            Status: menunggu peta dimuat...
+          </div>
+
+          <div class="quick-actions">
+            <button class="btn btn-primary" onclick="kembaliKeLokasi()">
+              <i class="fa-solid fa-location-crosshairs me-1"></i>Ke Lokasi
+            </button>
+            <button class="btn btn-outline-secondary" onclick="toggleLegend()">
+              <i class="fa-solid fa-list me-1"></i>Legenda
+            </button>
+            <button class="btn btn-outline-dark" onclick="toggleLayerVisibility()">
+              <i class="fa-solid fa-layer-group me-1"></i>Layer
+            </button>
+            <button class="btn btn-outline-primary" onclick="toggleFullscreenMap()">
+              <i class="fa-solid fa-expand me-1"></i>Fullscreen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <div class="map-box">
+          <div class="map-header">
+            <div class="map-header-text">
+              <h4>Peta</h4>
+              <p>Tampilan peta house dengan kontrol tambahan dan ringkasan data.</p>
+            </div>
+
+            <div class="chip-group">
+              <div class="chip"><i class="fa-solid fa-map me-1"></i>WebGIS</div>
+              <div class="chip"><i class="fa-solid fa-house me-1"></i>House</div>
+              <div class="chip"><i class="fa-solid fa-location-dot me-1"></i>Interaktif</div>
+            </div>
+          </div>
+
+          <div class="map-wrapper" id="mapWrapper">
+            <div class="loading-overlay" id="loadingOverlay">
+              <div class="loading-box">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <div class="fw-bold">Memuat peta...</div>
+                <small class="text-muted">Sedang membaca file GeoJSON</small>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div class="toolbar-box">
+                <div class="toolbar-title">Navigasi</div>
+                <div class="toolbar-buttons">
+                  <button class="btn btn-primary btn-fly position-static" onclick="kembaliKeLokasi()">
+                    <i class="fa-solid fa-location-crosshairs me-1"></i>Kembali ke Lokasi
+                  </button>
+                </div>
+              </div>
+
+              <div class="toolbar-box">
+                <div class="toolbar-title">Basemap</div>
+                <div class="toolbar-buttons">
+                  <button class="btn btn-outline-primary" onclick="gantiBasemap('streets')">
+                    <i class="fa-solid fa-road me-1"></i>Streets
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="gantiBasemap('satellite')">
+                    <i class="fa-solid fa-satellite me-1"></i>Satellite
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="gantiBasemap('light')">
+                    <i class="fa-regular fa-map me-1"></i>Light
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="map-overlay-right">
+              <div class="overlay-card">
+                <h6><i class="fa-solid fa-chart-simple me-2 text-primary"></i>Ringkasan Data</h6>
+                <div class="stat-line">
+                  <span>Jumlah feature</span>
+                  <strong id="featureCount">0</strong>
+                </div>
+                <div class="stat-line">
+                  <span>Layer aktif</span>
+                  <strong id="layerStatus">Belum dimuat</strong>
+                </div>
+                <div class="stat-line">
+                  <span>Basemap</span>
+                  <strong id="basemapStatus">Streets</strong>
+                </div>
+              </div>
+
+              <div class="overlay-card">
+                <h6><i class="fa-solid fa-crosshairs me-2 text-primary"></i>Koordinat Kursor</h6>
+                <div class="mouse-position" id="mousePosition">
+                  Gerakkan kursor di atas peta...
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-fly d-none" onclick="kembaliKeLokasi()">
+              <i class="fa-solid fa-location-crosshairs me-1"></i>Kembali ke Lokasi
+            </button>
+
+            <div id="map"></div>
+
+            <div class="legend" id="legendBox">
+              <div class="legend-title">Legenda</div>
+              <div><span class="legend-color"></span>Bangunan House</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 WebGIS Bangunan House
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZWxsZW5mcmV5amF1emFhIiwiYSI6ImNtbnBvZDd0bjJrMmYyb29vZXhrcmMycXcifQ.K1Mt6Dg-PwyUlsb4NiypmQ';
+
+    const geojsonPath = './Assets/geojson/house.geojson';
+    const centerAwal = [110.3671, -7.8014];
+    const zoomAwal = 16;
+
+    const statusBox = document.getElementById('status');
+    const featureCountEl = document.getElementById('featureCount');
+    const heroFeatureCountEl = document.getElementById('heroFeatureCount');
+    const layerStatusEl = document.getElementById('layerStatus');
+    const basemapStatusEl = document.getElementById('basemapStatus');
+    const mousePositionEl = document.getElementById('mousePosition');
+    const legendBox = document.getElementById('legendBox');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const mapWrapper = document.getElementById('mapWrapper');
+
+    let dataGeojsonGlobal = null;
+    let layerVisible = true;
+
+    const basemapStyles = {
+      streets: 'mapbox://styles/mapbox/streets-v12',
+      satellite: 'mapbox://styles/mapbox/satellite-streets-v12',
+      light: 'mapbox://styles/mapbox/light-v11'
+    };
+
+    function setStatus(text, isError = false) {
+      statusBox.textContent = text;
+
+      if (isError) {
+        statusBox.style.background = '#f8d7da';
+        statusBox.style.color = '#842029';
+        statusBox.style.border = '1px solid #f5c2c7';
+      } else {
+        statusBox.style.background = '#d1e7dd';
+        statusBox.style.color = '#0f5132';
+        statusBox.style.border = '1px solid #badbcc';
+      }
+    }
+
+    function showLoading(show = true) {
+      if (show) {
+        loadingOverlay.classList.remove('hidden');
+      } else {
+        loadingOverlay.classList.add('hidden');
+      }
+    }
+
+    function hitungBoundsDariGeoJSON(data) {
+      const bounds = new mapboxgl.LngLatBounds();
+
+      if (!data || !data.features) return bounds;
+
+      data.features.forEach(feature => {
+        if (!feature.geometry) return;
+
+        const geometry = feature.geometry;
+
+        if (geometry.type === 'Polygon') {
+          geometry.coordinates.forEach(ring => {
+            ring.forEach(coord => bounds.extend(coord));
+          });
+        } else if (geometry.type === 'MultiPolygon') {
+          geometry.coordinates.forEach(polygon => {
+            polygon.forEach(ring => {
+              ring.forEach(coord => bounds.extend(coord));
+            });
+          });
+        }
+      });
+
+      return bounds;
+    }
+
+    function kembaliKeLokasi() {
+      if (dataGeojsonGlobal) {
+        const bounds = hitungBoundsDariGeoJSON(dataGeojsonGlobal);
+
+        if (!bounds.isEmpty()) {
+          map.fitBounds(bounds, {
+            padding: 40,
+            duration: 1000
+          });
+          return;
+        }
+      }
+
+      map.flyTo({
+        center: centerAwal,
+        zoom: zoomAwal,
+        essential: true
+      });
+    }
+
+    function toggleLegend() {
+      legendBox.style.display = legendBox.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleLayerVisibility() {
+      const fillId = 'house-fill';
+      const outlineId = 'house-outline';
+
+      if (!map.getLayer(fillId) || !map.getLayer(outlineId)) return;
+
+      layerVisible = !layerVisible;
+      const visibility = layerVisible ? 'visible' : 'none';
+
+      map.setLayoutProperty(fillId, 'visibility', visibility);
+      map.setLayoutProperty(outlineId, 'visibility', visibility);
+      layerStatusEl.textContent = layerVisible ? 'Tampil' : 'Disembunyikan';
+
+      setStatus(
+        layerVisible
+          ? 'Status: layer House berhasil ditampilkan.'
+          : 'Status: layer House sedang disembunyikan.'
+      );
+    }
+
+    function toggleFullscreenMap() {
+      if (!document.fullscreenElement) {
+        mapWrapper.requestFullscreen().catch(err => {
+          console.error('Gagal fullscreen:', err);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    function buatHTMLPopup(properties) {
+      let isiAtribut = '';
+
+      for (const key in properties) {
+        isiAtribut += `
+          <div class="popup-item">
+            <span class="popup-key">${key}</span>
+            <span class="popup-value">${properties[key]}</span>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="popup-card">
+          <div class="popup-header">
+            <i class="fa-solid fa-house me-2"></i>Informasi House
+          </div>
+          <div class="popup-body">
+            ${isiAtribut || '<div class="popup-item"><span class="popup-key">Info</span><span class="popup-value">Tidak ada atribut</span></div>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function pasangEventLayer() {
+      map.on('click', 'house-fill', function (e) {
+        const properties = e.features[0].properties || {};
+
+        new mapboxgl.Popup({ className: 'custom-popup' })
+          .setLngLat(e.lngLat)
+          .setHTML(buatHTMLPopup(properties))
+          .addTo(map);
+      });
+
+      map.on('mouseenter', 'house-fill', function () {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'house-fill', function () {
+        map.getCanvas().style.cursor = '';
+      });
+    }
+
+    function tambahkanLayerGeoJSON(data) {
+      if (map.getSource('house')) {
+        if (map.getLayer('house-fill')) map.removeLayer('house-fill');
+        if (map.getLayer('house-outline')) map.removeLayer('house-outline');
+        map.removeSource('house');
+      }
+
+      map.addSource('house', {
+        type: 'geojson',
+        data: data
+      });
+
+      map.addLayer({
+        id: 'house-fill',
+        type: 'fill',
+        source: 'house',
+        paint: {
+          'fill-color': '#f97316',
+          'fill-opacity': 0.75
+        }
+      });
+
+      map.addLayer({
+        id: 'house-outline',
+        type: 'line',
+        source: 'house',
+        paint: {
+          'line-color': '#c2410c',
+          'line-width': 1.5
+        }
+      });
+
+      if (!layerVisible) {
+        map.setLayoutProperty('house-fill', 'visibility', 'none');
+        map.setLayoutProperty('house-outline', 'visibility', 'none');
+      }
+
+      pasangEventLayer();
+    }
+
+    function gantiBasemap(mode) {
+      if (!basemapStyles[mode]) return;
+
+      basemapStatusEl.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+      showLoading(true);
+      map.setStyle(basemapStyles[mode]);
+
+      map.once('style.load', function () {
+        if (dataGeojsonGlobal) {
+          tambahkanLayerGeoJSON(dataGeojsonGlobal);
+        }
+        showLoading(false);
+      });
+    }
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: centerAwal,
+      zoom: zoomAwal
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+    map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
+    map.addControl(new mapboxgl.ScaleControl({
+      maxWidth: 120,
+      unit: 'metric'
+    }), 'bottom-right');
+
+    map.on('error', function (e) {
+      console.error('Mapbox error:', e);
+    });
+
+    map.on('mousemove', function (e) {
+      mousePositionEl.textContent = `${e.lngLat.lng.toFixed(6)}, ${e.lngLat.lat.toFixed(6)}`;
+    });
+
+    map.on('load', async function () {
+      try {
+        showLoading(true);
+        setStatus('Status: membaca file GeoJSON...');
+
+        const response = await fetch(geojsonPath + '?v=' + Date.now());
+        if (!response.ok) {
+          throw new Error('File GeoJSON tidak ditemukan di: ' + geojsonPath);
+        }
+
+        const data = await response.json();
+        console.log('GeoJSON berhasil dibaca:', data);
+
+        if (!data || data.type !== 'FeatureCollection') {
+          throw new Error('Format GeoJSON tidak valid. Harus berupa FeatureCollection.');
+        }
+
+        if (!Array.isArray(data.features)) {
+          throw new Error('Property "features" tidak ditemukan atau bukan array.');
+        }
+
+        if (data.features.length === 0) {
+          throw new Error('GeoJSON berhasil dibaca, tetapi tidak ada feature di dalamnya.');
+        }
+
+        dataGeojsonGlobal = data;
+        featureCountEl.textContent = data.features.length;
+        heroFeatureCountEl.textContent = data.features.length;
+        layerStatusEl.textContent = 'Tampil';
+
+        setStatus('Status: GeoJSON berhasil dibaca. Jumlah feature: ' + data.features.length);
+
+        tambahkanLayerGeoJSON(data);
+
+        const bounds = hitungBoundsDariGeoJSON(data);
+
+        if (!bounds.isEmpty()) {
+          map.fitBounds(bounds, { padding: 40 });
+          setStatus('Status: layer House berhasil ditampilkan.');
+        } else {
+          setStatus('Status: GeoJSON terbaca, tetapi bounds kosong. Cek geometri polygon.', true);
+        }
+
+        showLoading(false);
+
+      } catch (error) {
+        console.error('ERROR DEBUG:', error);
+        setStatus('Gagal: ' + error.message, true);
+        showLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
