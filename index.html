@@ -17,11 +17,17 @@
 
   <style>
     /* =========================================================
-       VARIABEL WARNA DAN UKURAN GLOBAL
+       RESET DAN VARIABEL GLOBAL
        Fungsi:
-       - Menyimpan warna utama, bayangan, dan tinggi header/footer
-       - Memudahkan penyesuaian tampilan secara konsisten
+       - Menyamakan box model seluruh elemen
+       - Menyimpan warna, ukuran header/footer, dan jarak aman
        ========================================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
     :root {
       --primary: #0d6efd;
       --primary-dark: #0b5ed7;
@@ -33,19 +39,28 @@
       --text-muted: #6b7280;
       --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.08);
       --shadow-hover: 0 16px 40px rgba(15, 23, 42, 0.14);
-      --top-fixed-height: 126px;
-      --bottom-fixed-height: 48px;
+
+      --navbar-height: 52px;
+      --hero-height: 120px;
+      --top-fixed-height: calc(var(--navbar-height) + var(--hero-height));
+      --bottom-fixed-height: 52px;
+
+      --content-gap-top: 20px;
+      --content-gap-bottom: 24px;
     }
 
     /* =========================================================
        PENGATURAN DASAR HALAMAN
        Fungsi:
-       - Membuat scroll halus
-       - Memberi ruang atas dan bawah agar tidak tertutup
-         header/footer fixed
-       - Mencegah layout melebar dan bertumpuk
+       - Memberi ruang aman agar isi tidak tertutup header/footer
+       - Menjaga layout tetap rapi dan tidak melebar
        ========================================================= */
-    html {
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      overflow-x: hidden;
       scroll-behavior: smooth;
     }
 
@@ -55,17 +70,18 @@
         radial-gradient(circle at top left, rgba(13,110,253,0.06), transparent 26%),
         radial-gradient(circle at bottom right, rgba(249,115,22,0.06), transparent 22%),
         var(--soft-bg);
-      margin: 0;
-      padding: 0;
-      padding-top: calc(var(--top-fixed-height) + 18px);
-      padding-bottom: calc(var(--bottom-fixed-height) + 20px);
       color: var(--text-dark);
-      overflow-x: hidden;
+      padding-top: calc(var(--top-fixed-height) + var(--content-gap-top));
+      padding-bottom: calc(var(--bottom-fixed-height) + var(--content-gap-bottom));
     }
 
     main.container.content-section {
       position: relative;
       z-index: 1;
+    }
+
+    .content-section {
+      margin: 0 0 10px 0;
     }
 
     .row.g-4 {
@@ -75,8 +91,8 @@
     /* =========================================================
        HEADER ATAS FIXED
        Fungsi:
-       - Menjaga navbar dan judul tetap di atas
-       - Tidak ikut bergerak saat halaman di-scroll
+       - Navbar dan hero tetap di atas
+       - Tidak ikut bergerak saat scroll
        ========================================================= */
     .top-fixed-area {
       position: fixed;
@@ -88,11 +104,13 @@
     }
 
     .navbar {
+      min-height: var(--navbar-height);
+      height: var(--navbar-height);
+      padding: 0;
+      display: flex;
+      align-items: center;
       box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
       backdrop-filter: blur(8px);
-      min-height: 48px;
-      padding-top: 6px;
-      padding-bottom: 6px;
     }
 
     .navbar-brand {
@@ -101,19 +119,18 @@
       font-size: 1rem;
     }
 
-    /* =========================================================
-       HERO / JUDUL UTAMA
-       Fungsi:
-       - Menampilkan judul peta
-       - Menampilkan deskripsi singkat dan ringkasan statistik
-       ========================================================= */
     .hero {
       background:
         linear-gradient(135deg, rgba(13,110,253,0.95), rgba(11,94,215,0.92)),
         linear-gradient(45deg, rgba(255,255,255,0.04), transparent 50%);
       color: white;
       text-align: center;
-      padding: 12px 16px;
+      min-height: var(--hero-height);
+      height: var(--hero-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
       position: relative;
       z-index: 1090;
       border-bottom-left-radius: 14px;
@@ -195,15 +212,11 @@
     }
 
     /* =========================================================
-       KONTEN UTAMA
+       KARTU KONTEN
        Fungsi:
-       - Mengatur jarak section
-       - Membuat box informasi dan peta lebih rapi
+       - Mengatur box informasi dan box peta
+       - Menjaga tinggi, padding, dan bayangan tetap rapi
        ========================================================= */
-    .content-section {
-      margin: 18px 0 22px;
-    }
-
     .info-box,
     .map-box,
     .mini-card {
@@ -215,7 +228,6 @@
       border: 1px solid rgba(255,255,255,0.65);
       backdrop-filter: blur(10px);
       transition: all 0.25s ease;
-      box-sizing: border-box;
     }
 
     .info-box:hover,
@@ -223,6 +235,10 @@
     .mini-card:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-hover);
+    }
+
+    .map-box {
+      overflow: hidden;
     }
 
     .info-box h4,
@@ -252,6 +268,7 @@
 
     .info-box ol {
       padding-left: 18px;
+      margin-bottom: 0;
     }
 
     .info-box li {
@@ -294,8 +311,7 @@
     /* =========================================================
        TOMBOL AKSI CEPAT
        Fungsi:
-       - Menyediakan tombol lokasi saya dan fullscreen
-       - Tombol legenda dan layer dihilangkan sesuai instruksi
+       - Menyediakan tombol lokasi saya, area data, fullscreen
        ========================================================= */
     .quick-actions {
       display: grid;
@@ -313,7 +329,7 @@
     /* =========================================================
        HEADER BOX PETA
        Fungsi:
-       - Menampilkan judul peta dan label kategori
+       - Menampilkan judul peta dan chip kategori
        ========================================================= */
     .map-header {
       display: flex;
@@ -349,26 +365,21 @@
     /* =========================================================
        WRAPPER PETA
        Fungsi:
-       - Menjadi container utama untuk map, overlay, toolbar,
-         legenda, dan loading
-       - Mencegah elemen saling bertumpuk tidak rapi
+       - Menjadi wadah peta dan overlay
+       - Menjaga peta fit tanpa menabrak footer
        ========================================================= */
-    .map-box {
-      overflow: hidden;
-    }
-
     .map-wrapper {
       position: relative;
       border-radius: 16px;
       overflow: hidden;
       background: #dbeafe;
       border: 1px solid rgba(0,0,0,0.06);
-      min-height: 600px;
+      min-height: 560px;
     }
 
     #map {
       width: 100%;
-      height: 600px;
+      height: 560px;
       display: block;
       border-radius: 12px;
       overflow: hidden;
@@ -377,7 +388,7 @@
     /* =========================================================
        TOOLBAR KIRI ATAS
        Fungsi:
-       - Menampilkan navigasi lokasi dan pilihan basemap
+       - Tombol navigasi lokasi dan pilihan basemap
        ========================================================= */
     .btn-fly {
       position: absolute;
@@ -433,10 +444,9 @@
     }
 
     /* =========================================================
-       LEGENDA PETA
+       LEGENDA
        Fungsi:
        - Menampilkan simbol layer permukiman
-       - Tetap tampil, tanpa tombol show/hide
        ========================================================= */
     .legend {
       position: absolute;
@@ -472,8 +482,7 @@
     /* =========================================================
        OVERLAY KANAN ATAS
        Fungsi:
-       - Menampilkan ringkasan data
-       - Menampilkan koordinat kursor
+       - Ringkasan data dan koordinat kursor
        ========================================================= */
     .map-overlay-right {
       position: absolute;
@@ -516,7 +525,7 @@
     /* =========================================================
        LOADING OVERLAY
        Fungsi:
-       - Menampilkan indikator saat peta / GeoJSON dimuat
+       - Indikator saat peta sedang dimuat
        ========================================================= */
     .loading-overlay {
       position: absolute;
@@ -548,7 +557,7 @@
     /* =========================================================
        POPUP ATRIBUT
        Fungsi:
-       - Menampilkan informasi atribut saat polygon diklik
+       - Menampilkan atribut permukiman saat polygon diklik
        ========================================================= */
     .custom-popup .mapboxgl-popup-content {
       border-radius: 16px;
@@ -601,8 +610,7 @@
     /* =========================================================
        FOOTER FIXED
        Fungsi:
-       - Footer tetap berada di bawah
-       - Tidak ikut naik saat halaman digulir
+       - Footer tetap di bawah tanpa menutupi isi
        ========================================================= */
     footer {
       position: fixed;
@@ -613,7 +621,8 @@
       background-color: #212529;
       color: white;
       text-align: center;
-      padding: 10px 12px;
+      padding: 0 12px;
+      height: var(--bottom-fixed-height);
       min-height: var(--bottom-fixed-height);
       display: flex;
       align-items: center;
@@ -624,16 +633,15 @@
 
     /* =========================================================
        RESPONSIVE TABLET
-       Fungsi:
-       - Menyesuaikan ukuran dan posisi elemen di layar sedang
        ========================================================= */
     @media (max-width: 991.98px) {
       :root {
-        --top-fixed-height: 156px;
+        --hero-height: 138px;
+        --bottom-fixed-height: 54px;
       }
 
       .hero {
-        padding: 12px 14px;
+        padding: 10px 14px;
       }
 
       .hero h1 {
@@ -655,28 +663,28 @@
         max-width: unset;
       }
 
-      #map {
-        height: 560px;
+      .map-wrapper {
+        min-height: 520px;
       }
 
-      .map-wrapper {
-        min-height: 560px;
+      #map {
+        height: 520px;
       }
     }
 
     /* =========================================================
        RESPONSIVE MOBILE
-       Fungsi:
-       - Menyesuaikan agar tampilan tetap rapi di HP
        ========================================================= */
     @media (max-width: 575.98px) {
       :root {
-        --top-fixed-height: 178px;
-        --bottom-fixed-height: 50px;
+        --navbar-height: 50px;
+        --hero-height: 160px;
+        --bottom-fixed-height: 58px;
       }
 
       body {
-        padding-top: calc(var(--top-fixed-height) + 12px);
+        padding-top: calc(var(--top-fixed-height) + 14px);
+        padding-bottom: calc(var(--bottom-fixed-height) + 18px);
       }
 
       .hero {
@@ -685,6 +693,7 @@
 
       .hero h1 {
         font-size: 0.92rem;
+        line-height: 1.35;
       }
 
       .hero p {
@@ -700,12 +709,12 @@
         grid-template-columns: 1fr;
       }
 
-      #map {
-        height: 500px;
+      .map-wrapper {
+        min-height: 460px;
       }
 
-      .map-wrapper {
-        min-height: 500px;
+      #map {
+        height: 460px;
       }
 
       .toolbar,
@@ -726,7 +735,6 @@
 
       footer {
         font-size: 0.76rem;
-        padding: 8px 10px;
       }
     }
   </style>
@@ -735,9 +743,6 @@
 
   <!-- =========================================================
        HEADER ATAS (FIXED)
-       Fungsi:
-       - Navbar judul aplikasi
-       - Hero judul utama peta dan statistik singkat
        ========================================================= -->
   <div class="top-fixed-area">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -777,16 +782,11 @@
 
   <!-- =========================================================
        KONTEN UTAMA
-       Terdiri dari:
-       - Panel informasi kiri
-       - Panel peta kanan
        ========================================================= -->
   <main class="container content-section">
     <div class="row g-4">
 
-      <!-- =========================
-           PANEL INFORMASI KIRI
-           ========================= -->
+      <!-- PANEL INFORMASI KIRI -->
       <div class="col-lg-3">
         <div class="info-box">
           <div class="section-title">
@@ -828,10 +828,6 @@
             Status: menunggu peta dimuat...
           </div>
 
-          <!-- =========================
-               QUICK ACTIONS
-               Legenda dan Layer toggle dihapus sesuai instruksi
-               ========================= -->
           <div class="quick-actions">
             <button class="btn btn-primary" onclick="kembaliKeLokasiPengguna()">
               <i class="fa-solid fa-location-crosshairs me-1"></i>Lokasi Saya
@@ -846,9 +842,7 @@
         </div>
       </div>
 
-      <!-- =========================
-           PANEL PETA KANAN
-           ========================= -->
+      <!-- PANEL PETA KANAN -->
       <div class="col-lg-9">
         <div class="map-box">
           <div class="map-header">
@@ -865,10 +859,7 @@
           </div>
 
           <div class="map-wrapper" id="mapWrapper">
-
-            <!-- =========================
-                 LOADING OVERLAY
-                 ========================= -->
+            <!-- LOADING -->
             <div class="loading-overlay" id="loadingOverlay">
               <div class="loading-box">
                 <div class="spinner-border text-primary mb-3" role="status"></div>
@@ -877,9 +868,7 @@
               </div>
             </div>
 
-            <!-- =========================
-                 TOOLBAR KIRI
-                 ========================= -->
+            <!-- TOOLBAR KIRI -->
             <div class="toolbar">
               <div class="toolbar-box">
                 <div class="toolbar-title">Navigasi</div>
@@ -909,9 +898,7 @@
               </div>
             </div>
 
-            <!-- =========================
-                 OVERLAY KANAN
-                 ========================= -->
+            <!-- OVERLAY KANAN -->
             <div class="map-overlay-right">
               <div class="overlay-card">
                 <h6><i class="fa-solid fa-chart-simple me-2 text-primary"></i>Ringkasan Data</h6>
@@ -937,15 +924,10 @@
               </div>
             </div>
 
-            <!-- =========================
-                 MAP CONTAINER
-                 ========================= -->
+            <!-- MAP -->
             <div id="map"></div>
 
-            <!-- =========================
-                 LEGENDA
-                 Tetap tampil, tanpa tombol sembunyikan/tampilkan
-                 ========================= -->
+            <!-- LEGENDA -->
             <div class="legend" id="legendBox">
               <div class="legend-title">Legenda</div>
               <div><span class="legend-color"></span>Permukiman (OSM House)</div>
@@ -953,12 +935,11 @@
           </div>
         </div>
       </div>
+
     </div>
   </main>
 
-  <!-- =========================================================
-       FOOTER
-       ========================================================= -->
+  <!-- FOOTER -->
   <footer>
     © 2026 WebGIS Persebaran Permukiman Kabupaten Sleman | Sumber Data: OpenStreetMap (OSM)
   </footer>
@@ -972,10 +953,6 @@
   <script>
     /* =========================================================
        KONFIGURASI AWAL
-       Fungsi:
-       - Menyimpan token Mapbox
-       - Menentukan path GeoJSON
-       - Menentukan titik default fallback
        ========================================================= */
     mapboxgl.accessToken = 'pk.eyJ1IjoiZWxsZW5mcmV5amF1emFhIiwiYSI6ImNtbnBvZDd0bjJrMmYyb29vZXhrcmMycXcifQ.K1Mt6Dg-PwyUlsb4NiypmQ';
 
@@ -986,8 +963,6 @@
 
     /* =========================================================
        REFERENSI ELEMEN HTML
-       Fungsi:
-       - Menghubungkan script JS dengan elemen yang ada di HTML
        ========================================================= */
     const statusBox = document.getElementById('status');
     const featureCountEl = document.getElementById('featureCount');
@@ -995,25 +970,18 @@
     const layerStatusEl = document.getElementById('layerStatus');
     const basemapStatusEl = document.getElementById('basemapStatus');
     const mousePositionEl = document.getElementById('mousePosition');
-    const legendBox = document.getElementById('legendBox');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const mapWrapper = document.getElementById('mapWrapper');
 
     /* =========================================================
        VARIABEL GLOBAL
-       Fungsi:
-       - Menyimpan data GeoJSON yang sudah dibaca
-       - Menyimpan lokasi pengguna
-       - Menyimpan marker lokasi pengguna agar tidak dobel
        ========================================================= */
     let dataGeojsonGlobal = null;
     let lokasiPengguna = null;
     let markerLokasiPengguna = null;
 
     /* =========================================================
-       DAFTAR STYLE BASEMAP
-       Fungsi:
-       - Menyimpan pilihan style Mapbox
+       STYLE BASEMAP
        ========================================================= */
     const basemapStyles = {
       streets: 'mapbox://styles/mapbox/streets-v12',
@@ -1023,9 +991,6 @@
 
     /* =========================================================
        FUNGSI STATUS
-       Fungsi:
-       - Menampilkan status proses ke box informasi
-       - Menandai status normal atau error
        ========================================================= */
     function setStatus(text, isError = false) {
       statusBox.textContent = text;
@@ -1043,8 +1008,6 @@
 
     /* =========================================================
        FUNGSI LOADING
-       Fungsi:
-       - Menampilkan atau menyembunyikan overlay loading
        ========================================================= */
     function showLoading(show = true) {
       if (show) {
@@ -1055,10 +1018,7 @@
     }
 
     /* =========================================================
-       FUNGSI HITUNG BOUNDS GEOJSON
-       Fungsi:
-       - Menghitung batas area semua polygon pada GeoJSON
-       - Digunakan untuk fitBounds ke area data
+       HITUNG BOUNDS DARI GEOJSON
        ========================================================= */
     function hitungBoundsDariGeoJSON(data) {
       const bounds = new mapboxgl.LngLatBounds();
@@ -1087,10 +1047,7 @@
     }
 
     /* =========================================================
-       FUNGSI KE AREA DATA
-       Fungsi:
-       - Mengarahkan peta ke seluruh area layer permukiman
-       - Jika gagal, kembali ke titik default
+       KEMBALI KE AREA DATA
        ========================================================= */
     function kembaliKeLokasi() {
       if (dataGeojsonGlobal) {
@@ -1116,10 +1073,7 @@
     }
 
     /* =========================================================
-       FUNGSI DAPATKAN LOKASI PENGGUNA
-       Fungsi:
-       - Mengambil koordinat terkini dari browser pengguna
-       - Menggunakan Geolocation API
+       DAPATKAN LOKASI PENGGUNA
        ========================================================= */
     function dapatkanLokasiPengguna() {
       return new Promise((resolve, reject) => {
@@ -1148,10 +1102,7 @@
     }
 
     /* =========================================================
-       FUNGSI TAMPILKAN MARKER LOKASI PENGGUNA
-       Fungsi:
-       - Menampilkan marker di posisi pengguna
-       - Jika marker sudah ada, marker lama dihapus dulu
+       TAMPILKAN MARKER LOKASI PENGGUNA
        ========================================================= */
     function tampilkanMarkerLokasiPengguna(coords) {
       if (markerLokasiPengguna) {
@@ -1165,11 +1116,7 @@
     }
 
     /* =========================================================
-       FUNGSI KE LOKASI PENGGUNA
-       Fungsi:
-       - Mengarahkan peta ke lokasi terkini pengguna
-       - Menambahkan marker lokasi pengguna
-       - Jika gagal, fallback ke area data
+       KEMBALI KE LOKASI PENGGUNA
        ========================================================= */
     function kembaliKeLokasiPengguna() {
       if (lokasiPengguna) {
@@ -1202,9 +1149,7 @@
     }
 
     /* =========================================================
-       FUNGSI FULLSCREEN
-       Fungsi:
-       - Menampilkan peta ke mode layar penuh
+       FULLSCREEN
        ========================================================= */
     function toggleFullscreenMap() {
       if (!document.fullscreenElement) {
@@ -1217,9 +1162,7 @@
     }
 
     /* =========================================================
-       FUNGSI MEMBUAT HTML POPUP
-       Fungsi:
-       - Mengubah atribut GeoJSON menjadi tampilan popup yang rapi
+       MEMBUAT HTML POPUP
        ========================================================= */
     function buatHTMLPopup(properties) {
       let isiAtribut = '';
@@ -1246,10 +1189,7 @@
     }
 
     /* =========================================================
-       FUNGSI PASANG EVENT LAYER
-       Fungsi:
-       - Klik polygon untuk popup
-       - Hover polygon untuk ubah cursor
+       PASANG EVENT LAYER
        ========================================================= */
     function pasangEventLayer() {
       map.on('click', 'house-fill', function (e) {
@@ -1271,10 +1211,7 @@
     }
 
     /* =========================================================
-       FUNGSI TAMBAHKAN LAYER GEOJSON
-       Fungsi:
-       - Menambahkan source dan layer polygon ke peta
-       - Menambahkan fill dan outline
+       TAMBAHKAN LAYER GEOJSON
        ========================================================= */
     function tambahkanLayerGeoJSON(data) {
       if (map.getSource('house')) {
@@ -1313,9 +1250,7 @@
     }
 
     /* =========================================================
-       FUNGSI GANTI BASEMAP
-       Fungsi:
-       - Mengubah style basemap tanpa menghilangkan layer GeoJSON
+       GANTI BASEMAP
        ========================================================= */
     function gantiBasemap(mode) {
       if (!basemapStyles[mode]) return;
@@ -1339,9 +1274,6 @@
 
     /* =========================================================
        INISIALISASI PETA
-       Fungsi:
-       - Membuat objek map Mapbox
-       - Menentukan style awal, center awal, dan zoom awal
        ========================================================= */
     const map = new mapboxgl.Map({
       container: 'map',
@@ -1352,8 +1284,6 @@
 
     /* =========================================================
        CONTROL PETA
-       Fungsi:
-       - Menambahkan zoom control, fullscreen control, scale bar
        ========================================================= */
     map.addControl(new mapboxgl.NavigationControl(), 'top-left');
     map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
@@ -1364,8 +1294,6 @@
 
     /* =========================================================
        EVENT ERROR MAP
-       Fungsi:
-       - Menampilkan error di console bila ada masalah Mapbox
        ========================================================= */
     map.on('error', function (e) {
       console.error('Mapbox error:', e);
@@ -1373,8 +1301,6 @@
 
     /* =========================================================
        EVENT MOUSE MOVE
-       Fungsi:
-       - Menampilkan koordinat kursor pada overlay kanan
        ========================================================= */
     map.on('mousemove', function (e) {
       mousePositionEl.textContent = `${e.lngLat.lng.toFixed(6)}, ${e.lngLat.lat.toFixed(6)}`;
@@ -1382,13 +1308,6 @@
 
     /* =========================================================
        EVENT LOAD MAP
-       Fungsi:
-       - Membaca file GeoJSON
-       - Validasi isi GeoJSON
-       - Menambahkan layer ke peta
-       - Mengisi statistik feature
-       - Mengarahkan peta ke lokasi pengguna terlebih dahulu
-       - Jika geolokasi gagal, fallback ke area data
        ========================================================= */
     map.on('load', async function () {
       try {
