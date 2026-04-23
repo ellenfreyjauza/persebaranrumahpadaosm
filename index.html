@@ -44,9 +44,10 @@
     }
 
     .app-shell {
+      min-height: 100vh;
       height: 100vh;
       display: grid;
-      grid-template-rows: 50px 96px 1fr 34px;
+      grid-template-rows: 50px auto minmax(0, 1fr) 34px;
       overflow: hidden;
     }
 
@@ -61,17 +62,18 @@
       font-weight: 700;
       font-size: 0.95rem;
       margin: 0;
+      white-space: nowrap;
     }
 
     .hero {
       background: linear-gradient(135deg, rgba(13,110,253,0.96), rgba(11,94,215,0.92));
       color: #fff;
       padding: 8px 0 10px;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .hero-wrap {
-      height: 100%;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -88,19 +90,22 @@
       font-size: 0.68rem;
       margin-bottom: 6px;
       width: fit-content;
+      max-width: 100%;
     }
 
     .hero h1 {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      line-height: 1.28;
-      margin: 0 0 3px 0;
+      line-height: 1.25;
+      margin: 0 0 2px 0;
+      white-space: normal;
+      word-break: break-word;
     }
 
     .hero p {
       margin: 0;
-      font-size: 0.74rem;
-      line-height: 1.3;
+      font-size: 0.7rem;
+      line-height: 1.28;
       opacity: 0.95;
     }
 
@@ -209,7 +214,7 @@
     .map-card-header p {
       margin: 2px 0 0;
       color: var(--text-muted);
-      font-size: 0.73rem;
+      font-size: 0.72rem;
       line-height: 1.28;
     }
 
@@ -791,6 +796,7 @@
 
     let dataGeojsonGlobal = null;
     let lokasiPengguna = null;
+    let lokasiAkurasi = null;
     let markerLokasiPengguna = null;
     let eventLayerSudahDipasang = false;
     let selectedFeatureId = null;
@@ -882,15 +888,36 @@
           (position) => {
             const lng = position.coords.longitude;
             const lat = position.coords.latitude;
+            const acc = Number(position.coords.accuracy || 0);
+
+            if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
+              reject(new Error('Koordinat lokasi tidak valid.'));
+              return;
+            }
+
+            if (acc && acc > 1500) {
+              reject(new Error(`Lokasi terdeteksi tetapi akurasinya terlalu rendah (±${Math.round(acc)} m). Aktifkan precise location / GPS / matikan VPN.`));
+              return;
+            }
+
             lokasiPengguna = [lng, lat];
-            resolve(lokasiPengguna);
+            lokasiAkurasi = acc;
+
+            resolve({
+              coords: lokasiPengguna,
+              accuracy: acc
+            });
           },
           (error) => {
-            reject(error);
+            let pesan = 'Gagal mendapatkan lokasi pengguna.';
+            if (error.code === 1) pesan = 'Izin lokasi ditolak.';
+            if (error.code === 2) pesan = 'Lokasi tidak tersedia.';
+            if (error.code === 3) pesan = 'Permintaan lokasi melebihi batas waktu.';
+            reject(new Error(pesan));
           },
           {
             enableHighAccuracy: true,
-            timeout: 10000,
+            timeout: 15000,
             maximumAge: 0
           }
         );
@@ -902,39 +929,41 @@
         markerLokasiPengguna.remove();
       }
 
+      const infoAkurasi = lokasiAkurasi
+        ? `<small>Akurasi ±${Math.round(lokasiAkurasi)} meter</small>`
+        : '';
+
       markerLokasiPengguna = new mapboxgl.Marker({ color: '#0d6efd' })
         .setLngLat(coords)
-        .setPopup(new mapboxgl.Popup().setHTML('<b>Lokasi Anda Saat Ini</b>'))
+        .setPopup(
+          new mapboxgl.Popup({ offset: 18 }).setHTML(`
+            <b>Lokasi Anda Saat Ini</b><br>
+            ${infoAkurasi}
+          `)
+        )
         .addTo(map);
     }
 
     function kembaliKeLokasiPengguna() {
-      if (lokasiPengguna) {
-        map.flyTo({
-          center: lokasiPengguna,
-          zoom: zoomLokasiPengguna,
-          essential: true
-        });
-
-        tampilkanMarkerLokasiPengguna(lokasiPengguna);
-        setStatus('Status: peta diarahkan ke lokasi terkini pengguna.');
-        return;
-      }
-
       dapatkanLokasiPengguna()
-        .then((coords) => {
+        .then((result) => {
+          const coords = result.coords;
+          const accuracy = result.accuracy || 0;
+
           map.flyTo({
             center: coords,
-            zoom: zoomLokasiPengguna,
+            zoom: accuracy > 100 ? 16 : 17.5,
             essential: true
           });
 
           tampilkanMarkerLokasiPengguna(coords);
-          setStatus('Status: lokasi terkini pengguna berhasil ditemukan.');
+
+          setStatus(
+            `Status: lokasi pengguna berhasil ditemukan${accuracy ? ` (akurasi ±${Math.round(accuracy)} m)` : ''}.`
+          );
         })
-        .catch(() => {
-          setStatus('Gagal mendapatkan lokasi pengguna. Peta diarahkan ke area data.', true);
-          kembaliKeLokasi();
+        .catch((error) => {
+          setStatus(error.message, true);
         });
     }
 
