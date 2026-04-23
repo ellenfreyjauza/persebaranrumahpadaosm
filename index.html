@@ -19,264 +19,268 @@
     :root {
       --primary: #0d6efd;
       --primary-dark: #0b5ed7;
+      --accent: #f97316;
+      --accent-dark: #c2410c;
       --soft-bg: #f4f7fb;
       --card-bg: rgba(255,255,255,0.98);
       --text-dark: #1f2937;
       --text-muted: #6b7280;
-      --shadow-soft: 0 6px 18px rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.08);
+      --shadow-hover: 0 16px 36px rgba(15, 23, 42, 0.12);
       --border-soft: 1px solid rgba(15, 23, 42, 0.07);
     }
 
     html, body {
-      width: 100%;
-      height: 100%;
       margin: 0;
       padding: 0;
+      width: 100%;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
     body {
       font-family: Arial, Helvetica, sans-serif;
       color: var(--text-dark);
       background:
-        radial-gradient(circle at top left, rgba(13,110,253,0.05), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(249,115,22,0.05), transparent 25%),
+        radial-gradient(circle at top left, rgba(13,110,253,0.06), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(249,115,22,0.06), transparent 24%),
         var(--soft-bg);
     }
 
-    .app-shell {
-      min-height: 100vh;
-      height: 100vh;
-      display: grid;
-      grid-template-rows: 50px auto minmax(0, 1fr) 34px;
-      overflow: hidden;
-    }
-
     .navbar {
-      min-height: 50px;
-      padding-top: 0;
-      padding-bottom: 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
     }
 
     .navbar-brand {
       font-weight: 700;
-      font-size: 0.95rem;
-      margin: 0;
-      white-space: nowrap;
+      letter-spacing: 0.2px;
     }
 
     .hero {
       background: linear-gradient(135deg, rgba(13,110,253,0.96), rgba(11,94,215,0.92));
-      color: #fff;
-      padding: 8px 0 10px;
-      overflow: visible;
-    }
-
-    .hero-wrap {
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      color: white;
+      padding: 28px 18px 30px;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      box-shadow: 0 10px 26px rgba(13,110,253,0.14);
+      margin-bottom: 24px;
     }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
+      gap: 8px;
+      padding: 6px 12px;
       border-radius: 999px;
       background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.16);
-      font-size: 0.68rem;
-      margin-bottom: 6px;
-      width: fit-content;
-      max-width: 100%;
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 0.78rem;
+      margin-bottom: 12px;
     }
 
     .hero h1 {
-      font-size: 0.9rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      line-height: 1.25;
-      margin: 0 0 2px 0;
-      white-space: normal;
-      word-break: break-word;
+      line-height: 1.45;
+      margin-bottom: 8px;
     }
 
     .hero p {
-      margin: 0;
-      font-size: 0.7rem;
-      line-height: 1.28;
-      opacity: 0.95;
+      margin-bottom: 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      opacity: 0.96;
     }
 
     .hero-stats {
       display: flex;
-      gap: 7px;
       flex-wrap: wrap;
-      margin-top: 7px;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     .hero-stat {
-      min-width: 88px;
-      padding: 5px 8px;
-      border-radius: 9px;
+      min-width: 118px;
+      padding: 10px 12px;
+      border-radius: 12px;
       background: rgba(255,255,255,0.14);
       border: 1px solid rgba(255,255,255,0.16);
     }
 
     .hero-stat .number {
       display: block;
-      font-size: 0.8rem;
+      font-size: 1rem;
       font-weight: 700;
-      line-height: 1.1;
+      line-height: 1.2;
     }
 
     .hero-stat .label {
-      font-size: 0.63rem;
+      font-size: 0.75rem;
       opacity: 0.92;
     }
 
     .page-section {
-      min-height: 0;
-      overflow: hidden;
-      padding: 8px 10px;
-    }
-
-    .page-section > .container-fluid,
-    .page-section > .container-fluid > .row {
-      height: 100%;
-      min-height: 0;
-    }
-
-    .page-col {
-      min-height: 0;
+      padding-bottom: 28px;
     }
 
     .panel-card {
       background: var(--card-bg);
-      border-radius: 14px;
+      border-radius: 18px;
       box-shadow: var(--shadow-soft);
       border: var(--border-soft);
-      height: 100%;
-      min-height: 0;
-      overflow: hidden;
+      transition: 0.25s ease;
     }
 
+    .panel-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .side-card,
     .map-card,
     .info-card {
-      padding: 10px;
+      padding: 20px;
       height: 100%;
-      min-height: 0;
+    }
+
+    .sticky-desktop {
+      position: sticky;
+      top: 18px;
     }
 
     .section-title {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 10px;
       font-weight: 700;
-      margin-bottom: 8px;
-      font-size: 0.88rem;
+      margin-bottom: 16px;
     }
 
     .section-title i {
-      width: 27px;
-      height: 27px;
+      width: 36px;
+      height: 36px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 8px;
+      border-radius: 12px;
       color: var(--primary);
       background: linear-gradient(135deg, rgba(13,110,253,0.12), rgba(249,115,22,0.10));
-      flex: 0 0 27px;
+      flex: 0 0 36px;
     }
 
-    .map-card {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
+    .side-card ol {
+      padding-left: 18px;
+      margin-bottom: 0;
+    }
+
+    .side-card li {
+      margin-bottom: 10px;
+      line-height: 1.65;
+    }
+
+    .mini-info-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-info-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px 16px;
+      border: 1px solid rgba(15,23,42,0.06);
+    }
+
+    .mini-info-item small {
+      display: block;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .mini-info-item strong {
+      color: var(--text-dark);
+    }
+
+    .status-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      background: #fff3cd;
+      color: #664d03;
+      border: 1px solid #ffecb5;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .btn-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-grid .btn,
+    .map-tools .btn,
+    .info-card .btn {
+      border-radius: 12px;
+      font-weight: 600;
     }
 
     .map-card-header {
       display: flex;
       justify-content: space-between;
       align-items: start;
-      gap: 8px;
+      gap: 14px;
       flex-wrap: wrap;
-      flex-shrink: 0;
+      margin-bottom: 16px;
     }
 
     .map-card-header h4 {
       margin: 0;
       font-weight: 700;
-      font-size: 0.92rem;
     }
 
     .map-card-header p {
-      margin: 2px 0 0;
+      margin: 6px 0 0;
       color: var(--text-muted);
-      font-size: 0.72rem;
-      line-height: 1.28;
+      font-size: 0.95rem;
+      line-height: 1.55;
     }
 
     .chip-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 8px;
     }
 
     .chip {
-      padding: 4px 8px;
+      padding: 8px 12px;
       border-radius: 999px;
       background: #eef4ff;
       color: var(--primary-dark);
       border: 1px solid rgba(13,110,253,0.1);
-      font-size: 0.65rem;
+      font-size: 0.82rem;
       font-weight: 700;
       white-space: nowrap;
     }
 
-    .toolbar-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
-
-    .map-tools,
-    .utility-tools {
+    .map-tools {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .btn,
-    .btn-sm {
-      border-radius: 9px !important;
-      font-weight: 600;
-    }
-
-    .map-tools .btn,
-    .utility-tools .btn,
-    .info-card .btn,
-    .navbar .btn {
-      font-size: 0.74rem;
-      padding: 6px 9px;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .map-wrap {
       position: relative;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
       border: 1px solid rgba(15,23,42,0.08);
       background: #dbeafe;
-      flex: 1;
-      min-height: 0;
     }
 
     #map {
       width: 100%;
-      height: 100%;
+      height: 620px;
       display: block;
     }
 
@@ -300,59 +304,61 @@
 
     .loading-box {
       background: #fff;
-      border-radius: 13px;
-      padding: 13px 15px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.14);
-      min-width: 170px;
+      border-radius: 18px;
+      padding: 22px 24px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.14);
+      min-width: 220px;
       text-align: center;
-      font-size: 0.78rem;
     }
 
     .legend-box {
+      margin-top: 14px;
       background: #fff;
       border: 1px solid rgba(15,23,42,0.06);
-      border-radius: 10px;
-      padding: 8px 10px;
-      flex-shrink: 0;
-      font-size: 0.72rem;
+      border-radius: 14px;
+      padding: 14px 16px;
     }
 
     .legend-title {
       font-weight: 700;
-      margin-bottom: 4px;
-      font-size: 0.76rem;
+      margin-bottom: 8px;
     }
 
     .legend-color {
       display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin-right: 6px;
+      width: 14px;
+      height: 14px;
+      margin-right: 8px;
       background: #f97316;
       border: 1px solid #c2410c;
       border-radius: 4px;
       vertical-align: middle;
     }
 
-    .info-card {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .info-card h5 {
+      font-weight: 700;
+      margin-bottom: 0;
     }
 
     .stat-block {
-      padding-bottom: 8px;
+      margin-bottom: 18px;
+      padding-bottom: 18px;
       border-bottom: 1px solid rgba(15,23,42,0.08);
-      flex-shrink: 0;
+    }
+
+    .stat-block:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
 
     .stat-line {
       display: flex;
       justify-content: space-between;
-      gap: 8px;
-      padding: 5px 0;
+      gap: 10px;
+      padding: 8px 0;
       border-bottom: 1px dashed #e5e7eb;
-      font-size: 0.75rem;
+      font-size: 0.95rem;
     }
 
     .stat-line:last-child {
@@ -364,39 +370,32 @@
       color: var(--primary-dark);
       text-align: right;
       word-break: break-word;
-      max-width: 56%;
     }
 
     .fixed-info-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
-      flex-shrink: 0;
-    }
-
-    .fixed-info-header h5 {
-      margin: 0;
-      font-weight: 700;
-      font-size: 0.84rem;
     }
 
     .fixed-info-body {
       background: #fff;
-      border-radius: 10px;
+      border-radius: 14px;
       border: 1px solid rgba(15,23,42,0.06);
-      flex: 1;
-      min-height: 0;
+      min-height: 380px;
+      max-height: 380px;
       overflow-y: auto;
       overflow-x: hidden;
     }
 
     .fixed-info-placeholder {
-      padding: 10px;
+      padding: 16px;
       color: var(--text-muted);
-      line-height: 1.38;
-      font-size: 0.74rem;
+      line-height: 1.65;
+      font-size: 0.93rem;
     }
 
     .feature-table {
@@ -410,17 +409,19 @@
 
     .feature-table th,
     .feature-table td {
-      padding: 7px 9px;
+      padding: 10px 14px;
       vertical-align: top;
-      font-size: 0.74rem;
-      line-height: 1.28;
+      font-size: 0.94rem;
+      line-height: 1.55;
     }
 
     .feature-table th {
-      width: 40%;
+      width: 42%;
       font-weight: 700;
       color: #374151;
       background: #f8fafc;
+      position: sticky;
+      left: 0;
     }
 
     .feature-table td {
@@ -429,348 +430,277 @@
       background: #fff;
     }
 
-    .status-box {
-      padding: 8px 10px;
-      border-radius: 10px;
-      font-size: 0.73rem;
-      background: #d1e7dd;
-      color: #0f5132;
-      border: 1px solid #badbcc;
-      line-height: 1.35;
-      word-break: break-word;
-    }
-
-    .drawer-card {
-      background: #fff;
-      border-radius: 12px;
-      border: 1px solid rgba(15,23,42,0.06);
-      padding: 11px;
-      margin-bottom: 10px;
-    }
-
-    .drawer-card:last-child {
-      margin-bottom: 0;
-    }
-
-    .drawer-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.84rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .drawer-title i {
-      color: var(--primary);
-    }
-
-    .drawer-card ol {
-      padding-left: 18px;
-      margin: 0;
-      font-size: 0.76rem;
-      line-height: 1.45;
-    }
-
-    .drawer-card li {
-      margin-bottom: 5px;
-    }
-
-    .mini-info-grid {
-      display: grid;
-      gap: 7px;
-    }
-
-    .mini-info-item {
-      background: #f9fbff;
-      border-radius: 10px;
-      padding: 8px 10px;
-      border: 1px solid rgba(15,23,42,0.06);
-    }
-
-    .mini-info-item small {
-      display: block;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-      font-size: 0.66rem;
-    }
-
-    .mini-info-item strong {
-      color: var(--text-dark);
-      font-size: 0.78rem;
-    }
-
-    .offcanvas {
-      --bs-offcanvas-width: 300px;
-    }
-
-    .offcanvas-header {
-      border-bottom: 1px solid rgba(15,23,42,0.08);
-    }
-
-    .offcanvas-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
     footer {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin-top: 28px;
       background: #212529;
       color: #fff;
       text-align: center;
-      padding: 0 12px;
-      font-size: 0.7rem;
-      line-height: 1.2;
-      overflow: hidden;
+      padding: 18px 14px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1199.98px) {
+      #map {
+        height: 560px;
+      }
     }
 
     @media (max-width: 991.98px) {
-      .app-shell {
-        height: auto;
-        min-height: 100vh;
-        display: block;
-        overflow: visible;
+      .sticky-desktop {
+        position: static;
       }
 
-      html, body {
-        overflow: auto;
+      .hero {
+        padding: 22px 16px 26px;
       }
 
-      .page-section {
-        overflow: visible;
+      .hero h1 {
+        font-size: 1.14rem;
       }
 
-      .page-section > .container-fluid,
-      .page-section > .container-fluid > .row {
-        height: auto;
-      }
-
-      .page-col {
-        min-height: unset;
-      }
-
-      .panel-card {
-        height: auto;
-      }
-
-      .map-wrap {
-        height: 420px;
-        flex: unset;
+      #map {
+        height: 500px;
       }
 
       .fixed-info-body {
-        height: 260px;
-        flex: unset;
+        min-height: 320px;
+        max-height: 320px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .hero {
+        padding: 20px 14px 24px;
       }
 
-      footer {
-        padding: 10px 12px;
+      .hero h1 {
+        font-size: 1.02rem;
+      }
+
+      .hero p {
+        font-size: 0.84rem;
+      }
+
+      .hero-stat {
+        min-width: 98px;
+      }
+
+      .map-card,
+      .side-card,
+      .info-card {
+        padding: 16px;
+      }
+
+      #map {
+        height: 400px;
+      }
+
+      .feature-table th,
+      .feature-table td {
+        padding: 9px 12px;
+        font-size: 0.9rem;
+      }
+
+      .feature-table th {
+        width: 40%;
+      }
+
+      .fixed-info-body {
+        min-height: 280px;
+        max-height: 280px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid px-3 px-lg-4">
-        <a class="navbar-brand" href="#">
-          <i class="fa-solid fa-map-location-dot me-2"></i>WebGIS Permukiman Sleman
-        </a>
-        <button class="btn btn-outline-light btn-sm ms-auto" data-bs-toggle="offcanvas" data-bs-target="#sidebarInfo">
-          <i class="fa-solid fa-bars me-1"></i>Menu
-        </button>
-      </div>
-    </nav>
 
-    <section class="hero">
-      <div class="container-fluid px-3 px-lg-4 hero-wrap">
-        <div class="hero-badge">
-          <i class="fa-solid fa-layer-group"></i>
-          Visualisasi Persebaran Permukiman Berbasis OSM
-        </div>
-
-        <h1>Peta Persebaran Permukiman di Kabupaten Sleman Berdasarkan Data OpenStreetMap (OSM)</h1>
-        <p>Visualisasi persebaran bangunan permukiman berbasis WebGIS dengan tampilan ringkas, panel informasi tetap, dan dashboard petunjuk tersembunyi.</p>
-
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <span class="number" id="heroFeatureCount">0</span>
-            <span class="label">Jumlah Feature</span>
-          </div>
-          <div class="hero-stat">
-            <span class="number">Polygon</span>
-            <span class="label">Geometri</span>
-          </div>
-          <div class="hero-stat">
-            <span class="number">OSM House</span>
-            <span class="label">Sumber Data</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <main class="page-section">
-      <div class="container-fluid px-3 px-lg-4">
-        <div class="row g-3">
-
-          <div class="col-lg-8 page-col">
-            <div class="panel-card map-card">
-              <div class="map-card-header">
-                <div>
-                  <h4>Peta</h4>
-                  <p>Tampilan persebaran permukiman Kabupaten Sleman berbasis data OpenStreetMap dengan ukuran elemen yang lebih ringkas dan ruang peta lebih luas.</p>
-                </div>
-
-                <div class="chip-group">
-                  <div class="chip"><i class="fa-solid fa-map me-1"></i>WebGIS</div>
-                  <div class="chip"><i class="fa-solid fa-house me-1"></i>Permukiman</div>
-                  <div class="chip"><i class="fa-solid fa-database me-1"></i>OSM</div>
-                </div>
-              </div>
-
-              <div class="toolbar-row">
-                <div class="map-tools">
-                  <button class="btn btn-primary basemap-btn" data-basemap="streets" onclick="gantiBasemap('streets')">
-                    <i class="fa-solid fa-road me-1"></i>Streets
-                  </button>
-                  <button class="btn btn-outline-primary basemap-btn" data-basemap="satellite" onclick="gantiBasemap('satellite')">
-                    <i class="fa-solid fa-satellite me-1"></i>Satellite
-                  </button>
-                </div>
-
-                <div class="utility-tools">
-                  <button class="btn btn-outline-secondary" onclick="kembaliKeLokasi()">
-                    <i class="fa-solid fa-map-location-dot me-1"></i>Area Data
-                  </button>
-                  <button class="btn btn-primary" onclick="kembaliKeLokasiPengguna()">
-                    <i class="fa-solid fa-location-crosshairs me-1"></i>Lokasi Saya
-                  </button>
-                  <button class="btn btn-outline-primary" onclick="toggleFullscreenMap()">
-                    <i class="fa-solid fa-expand me-1"></i>Fullscreen
-                  </button>
-                </div>
-              </div>
-
-              <div class="map-wrap" id="mapWrapper">
-                <div class="loading-overlay" id="loadingOverlay">
-                  <div class="loading-box">
-                    <div class="spinner-border text-primary mb-2" role="status"></div>
-                    <div class="fw-bold">Memuat peta...</div>
-                    <small class="text-muted">Sedang membaca data layer</small>
-                  </div>
-                </div>
-                <div id="map"></div>
-              </div>
-
-              <div class="legend-box">
-                <div class="legend-title">Legenda</div>
-                <div><span class="legend-color"></span>Permukiman (OSM House)</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 page-col">
-            <div class="panel-card info-card">
-              <div class="stat-block">
-                <div class="section-title mb-2">
-                  <i class="fa-solid fa-chart-simple"></i>
-                  <span>Ringkasan Data</span>
-                </div>
-
-                <div class="stat-line">
-                  <span>Jumlah feature</span>
-                  <strong id="featureCount">0</strong>
-                </div>
-                <div class="stat-line">
-                  <span>Layer aktif</span>
-                  <strong id="layerStatus">Belum dimuat</strong>
-                </div>
-                <div class="stat-line">
-                  <span>Basemap</span>
-                  <strong id="basemapStatus">Streets</strong>
-                </div>
-                <div class="stat-line">
-                  <span>Koordinat kursor</span>
-                  <strong id="mousePosition">Gerakkan kursor...</strong>
-                </div>
-              </div>
-
-              <div id="status" class="status-box">
-                Status: menunggu peta dimuat...
-              </div>
-
-              <div class="fixed-info-header">
-                <h5>
-                  <i class="fa-solid fa-house me-2 text-primary"></i>Informasi Permukiman
-                </h5>
-                <button class="btn btn-outline-secondary btn-sm" onclick="resetInfoPanel()">Reset</button>
-              </div>
-
-              <div class="fixed-info-body" id="fixedInfoBody">
-                <div class="fixed-info-placeholder">
-                  Klik polygon permukiman pada peta untuk menampilkan atribut di panel ini. Panel ini memiliki ukuran tetap sehingga tidak membesar atau mengecil mengikuti isi.
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </main>
-
-    <footer>
-      © 2026 WebGIS Persebaran Permukiman Kabupaten Sleman | Sumber Data: OpenStreetMap (OSM)
-    </footer>
-  </div>
-
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarInfo">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title">
-        <i class="fa-solid fa-circle-info me-2 text-primary"></i>Dashboard Petunjuk
-      </h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fa-solid fa-map-location-dot me-2"></i>WebGIS Permukiman Sleman
+      </a>
     </div>
-    <div class="offcanvas-body">
-      <div class="drawer-card">
-        <div class="drawer-title">
-          <i class="fa-solid fa-list-check"></i>
-          Petunjuk Penggunaan
-        </div>
-        <ol>
-          <li>Gunakan scroll mouse untuk memperbesar dan memperkecil peta.</li>
-          <li>Klik dan tahan peta untuk menggeser tampilan.</li>
-          <li>Klik polygon permukiman untuk menampilkan atribut pada panel informasi tetap.</li>
-          <li>Gunakan tombol <b>Area Data</b> untuk kembali ke cakupan data.</li>
-          <li>Gunakan tombol <b>Lokasi Saya</b> untuk menuju lokasi pengguna.</li>
-          <li>Gunakan tombol <b>Fullscreen</b> jika ingin memperbesar area peta.</li>
-        </ol>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <i class="fa-solid fa-layer-group"></i>
+        Visualisasi Persebaran Permukiman Berbasis OSM
       </div>
+      <h1>Peta Persebaran Permukiman di Kabupaten Sleman Berdasarkan Data OpenStreetMap (OSM)</h1>
+      <p>Visualisasi persebaran bangunan permukiman berbasis WebGIS menggunakan data OpenStreetMap dengan panel informasi tetap.</p>
 
-      <div class="drawer-card">
-        <div class="drawer-title">
-          <i class="fa-solid fa-database"></i>
-          Informasi Layer
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="number" id="heroFeatureCount">0</span>
+          <span class="label">Jumlah Feature</span>
         </div>
-
-        <div class="mini-info-grid">
-          <div class="mini-info-item">
-            <small>Nama Layer</small>
-            <strong>House</strong>
-          </div>
-          <div class="mini-info-item">
-            <small>Geometri</small>
-            <strong>Polygon</strong>
-          </div>
-          <div class="mini-info-item">
-            <small>Keterangan</small>
-            <strong>Permukiman dari OSM</strong>
-          </div>
+        <div class="hero-stat">
+          <span class="number">Polygon</span>
+          <span class="label">Geometri</span>
+        </div>
+        <div class="hero-stat">
+          <span class="number">OSM House</span>
+          <span class="label">Sumber Data</span>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <main class="container page-section">
+    <div class="row g-4">
+
+      <div class="col-lg-3">
+        <div class="panel-card side-card sticky-desktop">
+          <div class="section-title">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Petunjuk</span>
+          </div>
+
+          <ol>
+            <li>Gunakan scroll mouse untuk memperbesar dan memperkecil peta.</li>
+            <li>Klik dan tahan peta untuk menggeser tampilan.</li>
+            <li>Klik polygon permukiman untuk menampilkan atribut pada panel informasi tetap.</li>
+            <li>Gunakan tombol <b>Area Data</b> untuk kembali ke cakupan data.</li>
+            <li>Gunakan tombol <b>Lokasi Saya</b> untuk menuju lokasi pengguna.</li>
+          </ol>
+
+          <hr>
+
+          <div class="section-title">
+            <i class="fa-solid fa-database"></i>
+            <span>Informasi Layer</span>
+          </div>
+
+          <div class="mini-info-grid">
+            <div class="mini-info-item">
+              <small>Nama Layer</small>
+              <strong>House</strong>
+            </div>
+            <div class="mini-info-item">
+              <small>Geometri</small>
+              <strong>Polygon</strong>
+            </div>
+            <div class="mini-info-item">
+              <small>Keterangan</small>
+              <strong>Permukiman dari OSM</strong>
+            </div>
+          </div>
+
+          <div id="status" class="status-box">
+            Status: menunggu peta dimuat...
+          </div>
+
+          <div class="btn-grid">
+            <button class="btn btn-primary" onclick="kembaliKeLokasiPengguna()">
+              <i class="fa-solid fa-location-crosshairs me-1"></i>Lokasi Saya
+            </button>
+            <button class="btn btn-outline-secondary" onclick="kembaliKeLokasi()">
+              <i class="fa-solid fa-map-location-dot me-1"></i>Area Data
+            </button>
+            <button class="btn btn-outline-primary" onclick="toggleFullscreenMap()">
+              <i class="fa-solid fa-expand me-1"></i>Fullscreen
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="panel-card map-card">
+          <div class="map-card-header">
+            <div>
+              <h4>Peta</h4>
+              <p>Tampilan persebaran permukiman Kabupaten Sleman berdasarkan data OpenStreetMap dengan panel informasi tetap dan layout yang lebih stabil.</p>
+            </div>
+
+            <div class="chip-group">
+              <div class="chip"><i class="fa-solid fa-map me-1"></i>WebGIS</div>
+              <div class="chip"><i class="fa-solid fa-house me-1"></i>Permukiman</div>
+              <div class="chip"><i class="fa-solid fa-database me-1"></i>OSM</div>
+            </div>
+          </div>
+
+          <div class="map-tools">
+            <button class="btn btn-primary basemap-btn" data-basemap="streets" onclick="gantiBasemap('streets')">
+              <i class="fa-solid fa-road me-1"></i>Streets
+            </button>
+            <button class="btn btn-outline-primary basemap-btn" data-basemap="satellite" onclick="gantiBasemap('satellite')">
+              <i class="fa-solid fa-satellite me-1"></i>Satellite
+            </button>
+            <button class="btn btn-outline-primary basemap-btn" data-basemap="light" onclick="gantiBasemap('light')">
+              <i class="fa-regular fa-map me-1"></i>Light
+            </button>
+          </div>
+
+          <div class="map-wrap" id="mapWrapper">
+            <div class="loading-overlay" id="loadingOverlay">
+              <div class="loading-box">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <div class="fw-bold">Memuat peta...</div>
+                <small class="text-muted">Sedang membaca data layer</small>
+              </div>
+            </div>
+            <div id="map"></div>
+          </div>
+
+          <div class="legend-box">
+            <div class="legend-title">Legenda</div>
+            <div><span class="legend-color"></span>Permukiman (OSM House)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="panel-card info-card sticky-desktop">
+          <div class="stat-block">
+            <div class="section-title mb-3">
+              <i class="fa-solid fa-chart-simple"></i>
+              <span>Ringkasan Data</span>
+            </div>
+
+            <div class="stat-line">
+              <span>Jumlah feature</span>
+              <strong id="featureCount">0</strong>
+            </div>
+            <div class="stat-line">
+              <span>Layer aktif</span>
+              <strong id="layerStatus">Belum dimuat</strong>
+            </div>
+            <div class="stat-line">
+              <span>Basemap</span>
+              <strong id="basemapStatus">Streets</strong>
+            </div>
+            <div class="stat-line">
+              <span>Koordinat kursor</span>
+              <strong id="mousePosition">Gerakkan kursor...</strong>
+            </div>
+          </div>
+
+          <div>
+            <div class="fixed-info-header">
+              <h5>
+                <i class="fa-solid fa-house me-2 text-primary"></i>Informasi Permukiman
+              </h5>
+              <button class="btn btn-outline-secondary btn-sm" onclick="resetInfoPanel()">Reset</button>
+            </div>
+
+            <div class="fixed-info-body" id="fixedInfoBody">
+              <div class="fixed-info-placeholder">
+                Klik polygon permukiman pada peta untuk menampilkan atribut di panel ini. Panel ini memiliki ukuran tetap sehingga tidak membesar atau mengecil mengikuti isi.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    © 2026 WebGIS Persebaran Permukiman Kabupaten Sleman | Sumber Data: OpenStreetMap (OSM)
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
@@ -796,14 +726,14 @@
 
     let dataGeojsonGlobal = null;
     let lokasiPengguna = null;
-    let lokasiAkurasi = null;
     let markerLokasiPengguna = null;
     let eventLayerSudahDipasang = false;
     let selectedFeatureId = null;
 
     const basemapStyles = {
       streets: 'mapbox://styles/mapbox/streets-v12',
-      satellite: 'mapbox://styles/mapbox/satellite-streets-v12'
+      satellite: 'mapbox://styles/mapbox/satellite-streets-v12',
+      light: 'mapbox://styles/mapbox/light-v11'
     };
 
     function setStatus(text, isError = false) {
@@ -860,8 +790,8 @@
 
         if (!bounds.isEmpty()) {
           map.fitBounds(bounds, {
-            padding: 30,
-            duration: 900
+            padding: 40,
+            duration: 1000
           });
           setStatus('Status: peta diarahkan ke area data permukiman.');
           return;
@@ -888,36 +818,15 @@
           (position) => {
             const lng = position.coords.longitude;
             const lat = position.coords.latitude;
-            const acc = Number(position.coords.accuracy || 0);
-
-            if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
-              reject(new Error('Koordinat lokasi tidak valid.'));
-              return;
-            }
-
-            if (acc && acc > 1500) {
-              reject(new Error(`Lokasi terdeteksi tetapi akurasinya terlalu rendah (±${Math.round(acc)} m). Aktifkan precise location / GPS / matikan VPN.`));
-              return;
-            }
-
             lokasiPengguna = [lng, lat];
-            lokasiAkurasi = acc;
-
-            resolve({
-              coords: lokasiPengguna,
-              accuracy: acc
-            });
+            resolve(lokasiPengguna);
           },
           (error) => {
-            let pesan = 'Gagal mendapatkan lokasi pengguna.';
-            if (error.code === 1) pesan = 'Izin lokasi ditolak.';
-            if (error.code === 2) pesan = 'Lokasi tidak tersedia.';
-            if (error.code === 3) pesan = 'Permintaan lokasi melebihi batas waktu.';
-            reject(new Error(pesan));
+            reject(error);
           },
           {
             enableHighAccuracy: true,
-            timeout: 15000,
+            timeout: 10000,
             maximumAge: 0
           }
         );
@@ -929,41 +838,39 @@
         markerLokasiPengguna.remove();
       }
 
-      const infoAkurasi = lokasiAkurasi
-        ? `<small>Akurasi ±${Math.round(lokasiAkurasi)} meter</small>`
-        : '';
-
       markerLokasiPengguna = new mapboxgl.Marker({ color: '#0d6efd' })
         .setLngLat(coords)
-        .setPopup(
-          new mapboxgl.Popup({ offset: 18 }).setHTML(`
-            <b>Lokasi Anda Saat Ini</b><br>
-            ${infoAkurasi}
-          `)
-        )
+        .setPopup(new mapboxgl.Popup().setHTML('<b>Lokasi Anda Saat Ini</b>'))
         .addTo(map);
     }
 
     function kembaliKeLokasiPengguna() {
-      dapatkanLokasiPengguna()
-        .then((result) => {
-          const coords = result.coords;
-          const accuracy = result.accuracy || 0;
+      if (lokasiPengguna) {
+        map.flyTo({
+          center: lokasiPengguna,
+          zoom: zoomLokasiPengguna,
+          essential: true
+        });
 
+        tampilkanMarkerLokasiPengguna(lokasiPengguna);
+        setStatus('Status: peta diarahkan ke lokasi terkini pengguna.');
+        return;
+      }
+
+      dapatkanLokasiPengguna()
+        .then((coords) => {
           map.flyTo({
             center: coords,
-            zoom: accuracy > 100 ? 16 : 17.5,
+            zoom: zoomLokasiPengguna,
             essential: true
           });
 
           tampilkanMarkerLokasiPengguna(coords);
-
-          setStatus(
-            `Status: lokasi pengguna berhasil ditemukan${accuracy ? ` (akurasi ±${Math.round(accuracy)} m)` : ''}.`
-          );
+          setStatus('Status: lokasi terkini pengguna berhasil ditemukan.');
         })
-        .catch((error) => {
-          setStatus(error.message, true);
+        .catch(() => {
+          setStatus('Gagal mendapatkan lokasi pengguna. Peta diarahkan ke area data.', true);
+          kembaliKeLokasi();
         });
     }
 
@@ -1129,7 +1036,7 @@
         source: 'house',
         paint: {
           'line-color': '#c2410c',
-          'line-width': 1.1
+          'line-width': 1.2
         }
       });
 
@@ -1139,7 +1046,7 @@
         source: 'house',
         paint: {
           'line-color': '#0d6efd',
-          'line-width': 2.8
+          'line-width': 3
         },
         filter: ['==', ['id'], -999999]
       });
@@ -1188,7 +1095,7 @@
 
     const map = new mapboxgl.Map({
       container: 'map',
-      style: basemapStyles.streets,
+      style: 'mapbox://styles/mapbox/streets-v12',
       center: centerAwal,
       zoom: zoomAwal
     });
@@ -1196,7 +1103,7 @@
     map.addControl(new mapboxgl.NavigationControl(), 'top-left');
     map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
     map.addControl(new mapboxgl.ScaleControl({
-      maxWidth: 110,
+      maxWidth: 120,
       unit: 'metric'
     }), 'bottom-right');
 
@@ -1243,8 +1150,8 @@
 
         if (!bounds.isEmpty()) {
           map.fitBounds(bounds, {
-            padding: 30,
-            duration: 900
+            padding: 40,
+            duration: 1000
           });
           setStatus('Status: data berhasil dimuat dan peta diarahkan ke area permukiman.');
         } else {
