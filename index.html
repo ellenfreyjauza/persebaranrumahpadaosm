@@ -29,9 +29,8 @@
       --border-soft: 1px solid rgba(15, 23, 42, 0.07);
 
       --nav-h: 56px;
-      --hero-h: 122px;
-      --footer-h: 48px;
-      --main-gap: 12px;
+      --hero-h: 118px;
+      --footer-h: 44px;
     }
 
     html, body {
@@ -56,7 +55,7 @@
     .navbar {
       min-height: var(--nav-h);
       height: var(--nav-h);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.10);
       flex-shrink: 0;
     }
 
@@ -71,39 +70,44 @@
       height: var(--hero-h);
       background: linear-gradient(135deg, rgba(13,110,253,0.96), rgba(11,94,215,0.92));
       color: #fff;
-      box-shadow: 0 8px 22px rgba(13,110,253,0.12);
       flex-shrink: 0;
       display: flex;
       align-items: center;
+      box-shadow: 0 8px 20px rgba(13,110,253,0.12);
     }
 
-    .hero-inner {
-      width: 100%;
+    .hero .container-fluid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
     }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 5px 10px;
+      padding: 4px 10px;
       border-radius: 999px;
       background: rgba(255,255,255,0.14);
       border: 1px solid rgba(255,255,255,0.18);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       margin-bottom: 8px;
+      width: fit-content;
+      max-width: 100%;
     }
 
     .hero h1 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
-      line-height: 1.4;
+      line-height: 1.35;
       margin: 0 0 4px 0;
     }
 
     .hero p {
       margin: 0;
-      font-size: 0.82rem;
-      line-height: 1.45;
+      font-size: 0.8rem;
+      line-height: 1.4;
       opacity: 0.96;
     }
 
@@ -111,12 +115,12 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .hero-stat {
-      min-width: 108px;
-      padding: 7px 10px;
+      min-width: 102px;
+      padding: 6px 10px;
       border-radius: 10px;
       background: rgba(255,255,255,0.14);
       border: 1px solid rgba(255,255,255,0.16);
@@ -124,20 +128,20 @@
 
     .hero-stat .number {
       display: block;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.15;
     }
 
     .hero-stat .label {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       opacity: 0.92;
     }
 
     .page-section {
       flex: 1;
       overflow: hidden;
-      padding: 12px 14px;
+      padding: 10px 12px;
     }
 
     .page-section > .container-fluid,
@@ -157,7 +161,7 @@
     .side-card,
     .map-card,
     .info-card {
-      padding: 14px;
+      padding: 12px;
       height: 100%;
     }
 
@@ -166,48 +170,48 @@
       align-items: center;
       gap: 8px;
       font-weight: 700;
-      margin-bottom: 12px;
-      font-size: 0.98rem;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
     }
 
     .section-title i {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border-radius: 10px;
       color: var(--primary);
       background: linear-gradient(135deg, rgba(13,110,253,0.12), rgba(249,115,22,0.10));
-      flex: 0 0 32px;
+      flex: 0 0 30px;
     }
 
     .side-card {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .side-card ol {
       padding-left: 18px;
       margin: 0;
-      font-size: 0.83rem;
-      line-height: 1.5;
+      font-size: 0.8rem;
+      line-height: 1.45;
     }
 
     .side-card li {
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .mini-info-grid {
       display: grid;
-      gap: 8px;
+      gap: 7px;
     }
 
     .mini-info-item {
       background: #fff;
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 9px 11px;
       border: 1px solid rgba(15,23,42,0.06);
     }
 
@@ -215,28 +219,28 @@
       display: block;
       color: var(--text-muted);
       margin-bottom: 2px;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
     }
 
     .mini-info-item strong {
       color: var(--text-dark);
-      font-size: 0.9rem;
+      font-size: 0.84rem;
     }
 
     .status-box {
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 0.82rem;
+      padding: 9px 11px;
+      border-radius: 11px;
+      font-size: 0.78rem;
       background: #fff3cd;
       color: #664d03;
       border: 1px solid #ffecb5;
-      line-height: 1.45;
+      line-height: 1.4;
       word-break: break-word;
     }
 
     .btn-grid {
       display: grid;
-      gap: 8px;
+      gap: 7px;
       margin-top: auto;
     }
 
@@ -245,14 +249,14 @@
     .info-card .btn {
       border-radius: 10px;
       font-weight: 600;
-      font-size: 0.84rem;
-      padding: 8px 10px;
+      font-size: 0.8rem;
+      padding: 7px 9px;
     }
 
     .map-card {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .map-card-header {
@@ -267,14 +271,14 @@
     .map-card-header h4 {
       margin: 0;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.98rem;
     }
 
     .map-card-header p {
-      margin: 4px 0 0;
+      margin: 3px 0 0;
       color: var(--text-muted);
-      font-size: 0.82rem;
-      line-height: 1.45;
+      font-size: 0.78rem;
+      line-height: 1.35;
     }
 
     .chip-group {
@@ -284,12 +288,12 @@
     }
 
     .chip {
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: 999px;
       background: #eef4ff;
       color: var(--primary-dark);
       border: 1px solid rgba(13,110,253,0.1);
-      font-size: 0.74rem;
+      font-size: 0.7rem;
       font-weight: 700;
       white-space: nowrap;
     }
@@ -297,7 +301,7 @@
     .map-tools {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 7px;
       flex-shrink: 0;
     }
 
@@ -338,26 +342,26 @@
     .loading-box {
       background: #fff;
       border-radius: 16px;
-      padding: 18px 20px;
+      padding: 16px 18px;
       box-shadow: 0 14px 34px rgba(0,0,0,0.14);
-      min-width: 200px;
+      min-width: 190px;
       text-align: center;
-      font-size: 0.88rem;
+      font-size: 0.84rem;
     }
 
     .legend-box {
       background: #fff;
       border: 1px solid rgba(15,23,42,0.06);
-      border-radius: 12px;
-      padding: 10px 12px;
+      border-radius: 11px;
+      padding: 9px 11px;
       flex-shrink: 0;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
     }
 
     .legend-title {
       font-weight: 700;
-      margin-bottom: 6px;
-      font-size: 0.86rem;
+      margin-bottom: 5px;
+      font-size: 0.82rem;
     }
 
     .legend-color {
@@ -374,11 +378,11 @@
     .info-card {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .stat-block {
-      padding-bottom: 12px;
+      padding-bottom: 10px;
       border-bottom: 1px solid rgba(15,23,42,0.08);
       flex-shrink: 0;
     }
@@ -386,10 +390,10 @@
     .stat-line {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
-      padding: 6px 0;
+      gap: 8px;
+      padding: 5px 0;
       border-bottom: 1px dashed #e5e7eb;
-      font-size: 0.84rem;
+      font-size: 0.8rem;
     }
 
     .stat-line:last-child {
@@ -401,7 +405,7 @@
       color: var(--primary-dark);
       text-align: right;
       word-break: break-word;
-      max-width: 52%;
+      max-width: 54%;
     }
 
     .fixed-info-header {
@@ -416,7 +420,7 @@
     .fixed-info-header h5 {
       margin: 0;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .fixed-info-body {
@@ -430,10 +434,10 @@
     }
 
     .fixed-info-placeholder {
-      padding: 14px;
+      padding: 12px;
       color: var(--text-muted);
-      line-height: 1.55;
-      font-size: 0.84rem;
+      line-height: 1.45;
+      font-size: 0.8rem;
     }
 
     .feature-table {
@@ -447,10 +451,10 @@
 
     .feature-table th,
     .feature-table td {
-      padding: 9px 12px;
+      padding: 8px 10px;
       vertical-align: top;
-      font-size: 0.84rem;
-      line-height: 1.45;
+      font-size: 0.8rem;
+      line-height: 1.35;
     }
 
     .feature-table th {
@@ -476,8 +480,8 @@
       color: #fff;
       text-align: center;
       padding: 0 14px;
-      font-size: 0.8rem;
-      line-height: 1.4;
+      font-size: 0.76rem;
+      line-height: 1.35;
       flex-shrink: 0;
     }
 
@@ -490,6 +494,17 @@
         overflow-y: auto;
       }
 
+      .hero,
+      .navbar,
+      footer {
+        height: auto;
+        min-height: unset;
+      }
+
+      .hero {
+        padding: 18px 14px;
+      }
+
       .page-section {
         overflow: visible;
       }
@@ -497,12 +512,6 @@
       .page-section > .container-fluid,
       .page-section > .container-fluid > .row {
         height: auto;
-      }
-
-      .hero {
-        height: auto;
-        min-height: unset;
-        padding: 20px 14px;
       }
 
       .panel-card {
@@ -520,8 +529,6 @@
       }
 
       footer {
-        min-height: 48px;
-        height: auto;
         padding: 12px 14px;
       }
     }
@@ -538,7 +545,7 @@
   </nav>
 
   <section class="hero">
-    <div class="container-fluid px-3 px-lg-4 hero-inner">
+    <div class="container-fluid px-3 px-lg-4">
       <div class="hero-badge">
         <i class="fa-solid fa-layer-group"></i>
         Visualisasi Persebaran Permukiman Berbasis OSM
@@ -625,7 +632,7 @@
             <div class="map-card-header">
               <div>
                 <h4>Peta</h4>
-                <p>Tampilan persebaran permukiman Kabupaten Sleman berdasarkan data OpenStreetMap dengan layout yang lebih ringkas.</p>
+                <p>Tampilan persebaran permukiman Kabupaten Sleman berdasarkan data OpenStreetMap dengan layout 1 layar.</p>
               </div>
 
               <div class="chip-group">
