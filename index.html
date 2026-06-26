@@ -156,8 +156,7 @@
       overflow: hidden;
     }
 
-    .map-card,
-    .info-card {
+    .map-card, .info-card {
       padding: 10px;
       height: 100%;
       min-height: 0;
@@ -237,9 +236,7 @@
       flex-wrap: wrap;
     }
 
-    .map-tools,
-    .utility-tools,
-    .filter-tools {
+    .map-tools, .utility-tools, .filter-tools {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
@@ -250,8 +247,7 @@
       border-top: 1px dashed rgba(15,23,42,0.12);
     }
 
-    .btn,
-    .btn-sm {
+    .btn, .btn-sm {
       border-radius: 9px !important;
       font-weight: 600;
     }
@@ -421,8 +417,7 @@
       border-bottom: 1px dashed #e5e7eb;
     }
 
-    .feature-table th,
-    .feature-table td {
+    .feature-table th, .feature-table td {
       padding: 7px 9px;
       vertical-align: top;
       font-size: 0.74rem;
@@ -570,13 +565,8 @@
     }
 
     @media (max-width: 575.98px) {
-      .legend-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .navbar-brand {
-        font-size: 0.78rem;
-      }
+      .legend-grid { grid-template-columns: 1fr; }
+      .navbar-brand { font-size: 0.78rem; }
     }
   </style>
 </head>
@@ -672,6 +662,7 @@
                 <button class="btn btn-outline-primary filter-btn" data-filter="Transportasi" onclick="filterKategori('Transportasi')">Transportasi</button>
                 <button class="btn btn-outline-primary filter-btn" data-filter="Ruang Publik/Olahraga" onclick="filterKategori('Ruang Publik/Olahraga')">Ruang Publik</button>
                 <button class="btn btn-outline-primary filter-btn" data-filter="Wisata/Budaya" onclick="filterKategori('Wisata/Budaya')">Wisata</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Lainnya" onclick="filterKategori('Lainnya')">Lainnya</button>
               </div>
 
               <div class="map-wrap" id="mapWrapper">
@@ -696,6 +687,7 @@
                   <div class="legend-item"><span class="legend-color" style="background:#16a34a"></span>Transportasi</div>
                   <div class="legend-item"><span class="legend-color" style="background:#65a30d"></span>Ruang publik</div>
                   <div class="legend-item"><span class="legend-color" style="background:#db2777"></span>Wisata/budaya</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#6b7280"></span>Lainnya</div>
                 </div>
               </div>
             </div>
@@ -867,11 +859,8 @@
     }
 
     function showLoading(show = true) {
-      if (show) {
-        loadingOverlay.classList.remove('hidden');
-      } else {
-        loadingOverlay.classList.add('hidden');
-      }
+      if (show) loadingOverlay.classList.remove('hidden');
+      else loadingOverlay.classList.add('hidden');
     }
 
     function escapeHtml(value) {
@@ -893,48 +882,29 @@
       const shop = String(properties.shop || '').toLowerCase();
       const publicTransport = String(properties.public_transport || '').toLowerCase();
 
-      if (['school', 'kindergarten', 'college', 'university', 'library'].includes(amenity)) {
-        return 'Pendidikan';
-      }
-
-      if (['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy'].includes(amenity)) {
-        return 'Kesehatan';
-      }
-
-      if (amenity === 'place_of_worship') {
-        return 'Tempat Ibadah';
-      }
+      if (['school', 'kindergarten', 'college', 'university', 'library'].includes(amenity)) return 'Pendidikan';
+      if (['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy'].includes(amenity)) return 'Kesehatan';
+      if (amenity === 'place_of_worship') return 'Tempat Ibadah';
 
       if (
         ['townhall', 'courthouse', 'police', 'fire_station', 'post_office', 'community_centre', 'social_facility'].includes(amenity) ||
         office === 'government'
-      ) {
-        return 'Pemerintahan/Layanan Publik';
-      }
+      ) return 'Pemerintahan/Layanan Publik';
 
       if (
         ['marketplace', 'bank', 'atm', 'fuel'].includes(amenity) ||
         ['supermarket', 'mall', 'department_store', 'convenience'].includes(shop)
-      ) {
-        return 'Ekonomi/Layanan Harian';
-      }
+      ) return 'Ekonomi/Layanan Harian';
 
       if (
         ['bus_station', 'parking', 'bicycle_parking', 'taxi'].includes(amenity) ||
         highway === 'bus_stop' ||
         ['station', 'halt'].includes(railway) ||
         ['station', 'stop_position', 'platform'].includes(publicTransport)
-      ) {
-        return 'Transportasi';
-      }
+      ) return 'Transportasi';
 
-      if (['park', 'garden', 'playground', 'sports_centre', 'stadium', 'pitch', 'recreation_ground', 'swimming_pool'].includes(leisure)) {
-        return 'Ruang Publik/Olahraga';
-      }
-
-      if (['attraction', 'museum', 'gallery', 'information', 'viewpoint', 'picnic_site'].includes(tourism)) {
-        return 'Wisata/Budaya';
-      }
+      if (['park', 'garden', 'playground', 'sports_centre', 'stadium', 'pitch', 'recreation_ground', 'swimming_pool'].includes(leisure)) return 'Ruang Publik/Olahraga';
+      if (['attraction', 'museum', 'gallery', 'information', 'viewpoint', 'picnic_site'].includes(tourism)) return 'Wisata/Budaya';
 
       return 'Lainnya';
     }
@@ -949,11 +919,7 @@
         properties['addr:province']
       ].filter(Boolean);
 
-      if (alamat.length > 0) {
-        return alamat.join(', ');
-      }
-
-      return properties.alamat || 'Kabupaten Sleman';
+      return alamat.length > 0 ? alamat.join(', ') : (properties.alamat || 'Kabupaten Sleman');
     }
 
     function kumpulkanKoordinat(coords, hasil = []) {
@@ -975,12 +941,9 @@
     function ambilTitikDariGeometry(geometry) {
       if (!geometry || !geometry.coordinates) return null;
 
-      if (geometry.type === 'Point') {
-        return geometry.coordinates;
-      }
+      if (geometry.type === 'Point') return geometry.coordinates;
 
       const koordinat = kumpulkanKoordinat(geometry.coordinates, []);
-
       if (koordinat.length === 0) return null;
 
       let totalLng = 0;
@@ -1063,20 +1026,12 @@
         });
       });
 
-      return {
-        type: 'FeatureCollection',
-        features: features
-      };
+      return { type: 'FeatureCollection', features: features };
     }
 
     function dataTerfilter() {
-      if (!dataGeojsonGlobal) {
-        return { type: 'FeatureCollection', features: [] };
-      }
-
-      if (filterAktif === 'Semua') {
-        return dataGeojsonGlobal;
-      }
+      if (!dataGeojsonGlobal) return { type: 'FeatureCollection', features: [] };
+      if (filterAktif === 'Semua') return dataGeojsonGlobal;
 
       return {
         type: 'FeatureCollection',
@@ -1093,12 +1048,8 @@
 
       data.features.forEach(feature => {
         if (!feature.geometry || feature.geometry.type !== 'Point') return;
-
         const coord = feature.geometry.coordinates;
-
-        if (koordinatValid(coord)) {
-          bounds.extend(coord);
-        }
+        if (koordinatValid(coord)) bounds.extend(coord);
       });
 
       return bounds;
@@ -1111,21 +1062,13 @@
         const bounds = hitungBoundsDariGeoJSON(data);
 
         if (!bounds.isEmpty()) {
-          map.fitBounds(bounds, {
-            padding: 40,
-            duration: 900
-          });
+          map.fitBounds(bounds, { padding: 40, duration: 900 });
           setStatus(`Status: peta diarahkan ke area data ${filterAktif === 'Semua' ? 'fasilitas umum' : filterAktif}.`);
           return;
         }
       }
 
-      map.flyTo({
-        center: centerAwal,
-        zoom: zoomAwal,
-        essential: true
-      });
-
+      map.flyTo({ center: centerAwal, zoom: zoomAwal, essential: true });
       setStatus('Status: area data tidak tersedia, peta diarahkan ke titik default.');
     }
 
@@ -1150,10 +1093,7 @@
             lokasiPengguna = [lng, lat];
             lokasiAkurasi = acc;
 
-            resolve({
-              coords: lokasiPengguna,
-              accuracy: acc
-            });
+            resolve({ coords: lokasiPengguna, accuracy: acc });
           },
           (error) => {
             let pesan = 'Gagal mendapatkan lokasi pengguna.';
@@ -1162,19 +1102,13 @@
             if (error.code === 3) pesan = 'Permintaan lokasi melebihi batas waktu.';
             reject(new Error(pesan));
           },
-          {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0
-          }
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
         );
       });
     }
 
     function tampilkanMarkerLokasiPengguna(coords) {
-      if (markerLokasiPengguna) {
-        markerLokasiPengguna.remove();
-      }
+      if (markerLokasiPengguna) markerLokasiPengguna.remove();
 
       const infoAkurasi = lokasiAkurasi
         ? `<small>Akurasi ±${Math.round(lokasiAkurasi)} meter</small>`
@@ -1182,12 +1116,10 @@
 
       markerLokasiPengguna = new mapboxgl.Marker({ color: '#0d6efd' })
         .setLngLat(coords)
-        .setPopup(
-          new mapboxgl.Popup({ offset: 18 }).setHTML(`
-            <b>Lokasi Anda Saat Ini</b><br>
-            ${infoAkurasi}
-          `)
-        )
+        .setPopup(new mapboxgl.Popup({ offset: 18 }).setHTML(`
+          <b>Lokasi Anda Saat Ini</b><br>
+          ${infoAkurasi}
+        `))
         .addTo(map);
     }
 
@@ -1205,9 +1137,7 @@
 
           tampilkanMarkerLokasiPengguna(coords);
 
-          setStatus(
-            `Status: lokasi pengguna berhasil ditemukan${accuracy ? ` (akurasi ±${Math.round(accuracy)} m)` : ''}.`
-          );
+          setStatus(`Status: lokasi pengguna berhasil ditemukan${accuracy ? ` (akurasi ±${Math.round(accuracy)} m)` : ''}.`);
         })
         .catch((error) => {
           setStatus(error.message, true);
@@ -1259,9 +1189,7 @@
 
       fixedInfoBody.innerHTML = `
         <table class="feature-table">
-          <tbody>
-            ${rows}
-          </tbody>
+          <tbody>${rows}</tbody>
         </table>
       `;
     }
@@ -1315,8 +1243,8 @@
       featureCountEl.textContent = jumlah;
       heroFeatureCountEl.textContent = jumlah;
 
-      setStatus(`Status: filter "${filterAktif}" aktif. Jumlah feature tampil: ${jumlah}.`);
       resetInfoPanel();
+      setStatus(`Status: filter "${filterAktif}" aktif. Jumlah feature tampil: ${jumlah}.`);
     }
 
     function updateFilterButton() {
@@ -1389,14 +1317,7 @@
         type: 'circle',
         source: 'fasilitas',
         paint: {
-          'circle-radius': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            10, 4,
-            14, 7,
-            17, 10
-          ],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 4, 14, 7, 17, 10],
           'circle-color': [
             'match',
             ['get', 'jenis'],
@@ -1479,10 +1400,7 @@
 
     map.addControl(new mapboxgl.NavigationControl(), 'top-left');
     map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
-    map.addControl(new mapboxgl.ScaleControl({
-      maxWidth: 110,
-      unit: 'metric'
-    }), 'bottom-right');
+    map.addControl(new mapboxgl.ScaleControl({ maxWidth: 110, unit: 'metric' }), 'bottom-right');
 
     map.on('error', function (e) {
       console.error('Mapbox error:', e);
@@ -1523,24 +1441,14 @@
         const bounds = hitungBoundsDariGeoJSON(dataFasilitas);
 
         if (!bounds.isEmpty()) {
-          map.fitBounds(bounds, {
-            padding: 45,
-            duration: 900
-          });
-
+          map.fitBounds(bounds, { padding: 45, duration: 900 });
           setStatus(`Status: ${dataFasilitas.features.length} data fasilitas umum berhasil dimuat.`);
         } else {
-          map.flyTo({
-            center: centerAwal,
-            zoom: zoomAwal,
-            essential: true
-          });
-
+          map.flyTo({ center: centerAwal, zoom: zoomAwal, essential: true });
           setStatus('Status: data berhasil dimuat, tetapi bounds kosong. Peta diarahkan ke titik default.', true);
         }
 
         showLoading(false);
-
       } catch (error) {
         console.error('ERROR DEBUG:', error);
         setStatus('Gagal: ' + error.message, true);
