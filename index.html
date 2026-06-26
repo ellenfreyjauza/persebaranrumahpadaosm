@@ -1,32 +1,16 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <!-- =========================================================
-       01. HEAD DAN DEPENDENSI
-       Fungsi:
-       - Menentukan metadata halaman
-       - Memanggil library eksternal (Bootstrap, Font Awesome, Mapbox)
-       ========================================================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebGIS Permukiman Sleman</title>
+  <title>WebGIS Fasilitas Umum Sleman</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet">
 
   <style>
-    /* =========================================================
-       02. CSS GLOBAL DAN VARIABEL TEMA
-       Fungsi:
-       - Reset box model
-       - Menentukan warna, bayangan, dan gaya dasar
-       ========================================================= */
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     :root {
       --primary: #0d6efd;
@@ -55,12 +39,6 @@
         var(--soft-bg);
     }
 
-    /* =========================================================
-       03. CSS LAYOUT UTAMA APLIKASI
-       Fungsi:
-       - Membentuk struktur vertikal utama:
-         navbar, hero, konten, footer
-       ========================================================= */
     .app-shell {
       min-height: 100vh;
       height: 100vh;
@@ -69,11 +47,6 @@
       overflow: hidden;
     }
 
-    /* =========================================================
-       04. CSS NAVBAR
-       Fungsi:
-       - Menata judul aplikasi di bagian atas
-       ========================================================= */
     .navbar {
       min-height: 50px;
       padding-top: 0;
@@ -88,11 +61,6 @@
       white-space: nowrap;
     }
 
-    /* =========================================================
-       05. CSS HERO / HEADER UTAMA
-       Fungsi:
-       - Menampilkan judul peta, deskripsi, dan statistik ringkas
-       ========================================================= */
     .hero {
       background: linear-gradient(135deg, rgba(13,110,253,0.96), rgba(11,94,215,0.92));
       color: #fff;
@@ -164,11 +132,6 @@
       opacity: 0.92;
     }
 
-    /* =========================================================
-       06. CSS AREA KONTEN UTAMA
-       Fungsi:
-       - Menjaga area dashboard tetap proporsional
-       ========================================================= */
     .page-section {
       min-height: 0;
       overflow: hidden;
@@ -181,15 +144,8 @@
       min-height: 0;
     }
 
-    .page-col {
-      min-height: 0;
-    }
+    .page-col { min-height: 0; }
 
-    /* =========================================================
-       07. CSS PANEL / CARD DASHBOARD
-       Fungsi:
-       - Menyamakan gaya card utama
-       ========================================================= */
     .panel-card {
       background: var(--card-bg);
       border-radius: 14px;
@@ -228,11 +184,6 @@
       flex: 0 0 27px;
     }
 
-    /* =========================================================
-       08. CSS PANEL PETA
-       Fungsi:
-       - Mengatur judul peta, chip, toolbar, dan kanvas map
-       ========================================================= */
     .map-card {
       display: flex;
       flex-direction: column;
@@ -287,10 +238,16 @@
     }
 
     .map-tools,
-    .utility-tools {
+    .utility-tools,
+    .filter-tools {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+    }
+
+    .filter-tools {
+      padding: 6px 0 2px;
+      border-top: 1px dashed rgba(15,23,42,0.12);
     }
 
     .btn,
@@ -301,6 +258,7 @@
 
     .map-tools .btn,
     .utility-tools .btn,
+    .filter-tools .btn,
     .info-card .btn,
     .navbar .btn {
       font-size: 0.74rem;
@@ -323,11 +281,6 @@
       display: block;
     }
 
-    /* =========================================================
-       09. CSS LOADING OVERLAY
-       Fungsi:
-       - Menampilkan layar loading saat data diproses
-       ========================================================= */
     .loading-overlay {
       position: absolute;
       inset: 0;
@@ -356,11 +309,6 @@
       font-size: 0.78rem;
     }
 
-    /* =========================================================
-       10. CSS LEGENDA
-       Fungsi:
-       - Menampilkan simbol dan keterangan layer
-       ========================================================= */
     .legend-box {
       background: #fff;
       border: 1px solid rgba(15,23,42,0.06);
@@ -376,22 +324,29 @@
       font-size: 0.76rem;
     }
 
-    .legend-color {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin-right: 6px;
-      background: #f97316;
-      border: 1px solid #c2410c;
-      border-radius: 4px;
-      vertical-align: middle;
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px 8px;
     }
 
-    /* =========================================================
-       11. CSS PANEL INFORMASI KANAN
-       Fungsi:
-       - Menata ringkasan data, status, dan tabel atribut
-       ========================================================= */
+    .legend-item {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 5px;
+    }
+
+    .legend-color {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border: 1px solid #fff;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.18);
+      border-radius: 50%;
+      flex: 0 0 11px;
+    }
+
     .info-card {
       display: flex;
       flex-direction: column;
@@ -498,11 +453,6 @@
       word-break: break-word;
     }
 
-    /* =========================================================
-       12. CSS OFFCANVAS / DASHBOARD PETUNJUK
-       Fungsi:
-       - Menata panel menu samping berisi petunjuk dan info layer
-       ========================================================= */
     .drawer-card {
       background: #fff;
       border-radius: 12px;
@@ -511,9 +461,7 @@
       margin-bottom: 10px;
     }
 
-    .drawer-card:last-child {
-      margin-bottom: 0;
-    }
+    .drawer-card:last-child { margin-bottom: 0; }
 
     .drawer-title {
       display: flex;
@@ -524,9 +472,7 @@
       margin-bottom: 8px;
     }
 
-    .drawer-title i {
-      color: var(--primary);
-    }
+    .drawer-title i { color: var(--primary); }
 
     .drawer-card ol {
       padding-left: 18px;
@@ -535,9 +481,7 @@
       line-height: 1.45;
     }
 
-    .drawer-card li {
-      margin-bottom: 5px;
-    }
+    .drawer-card li { margin-bottom: 5px; }
 
     .mini-info-grid {
       display: grid;
@@ -563,9 +507,7 @@
       font-size: 0.78rem;
     }
 
-    .offcanvas {
-      --bs-offcanvas-width: 300px;
-    }
+    .offcanvas { --bs-offcanvas-width: 300px; }
 
     .offcanvas-header {
       border-bottom: 1px solid rgba(15,23,42,0.08);
@@ -576,11 +518,6 @@
       font-weight: 700;
     }
 
-    /* =========================================================
-       13. CSS FOOTER
-       Fungsi:
-       - Menampilkan identitas dan sumber data di bagian bawah
-       ========================================================= */
     footer {
       display: flex;
       align-items: center;
@@ -594,11 +531,6 @@
       overflow: hidden;
     }
 
-    /* =========================================================
-       14. CSS RESPONSIVE
-       Fungsi:
-       - Menyesuaikan tampilan di tablet dan ponsel
-       ========================================================= */
     @media (max-width: 991.98px) {
       .app-shell {
         height: auto;
@@ -607,26 +539,16 @@
         overflow: visible;
       }
 
-      html, body {
-        overflow: auto;
-      }
-
-      .page-section {
-        overflow: visible;
-      }
+      html, body { overflow: auto; }
+      .page-section { overflow: visible; }
 
       .page-section > .container-fluid,
       .page-section > .container-fluid > .row {
         height: auto;
       }
 
-      .page-col {
-        min-height: unset;
-      }
-
-      .panel-card {
-        height: auto;
-      }
+      .page-col { min-height: unset; }
+      .panel-card { height: auto; }
 
       .map-wrap {
         height: 420px;
@@ -638,29 +560,33 @@
         flex: unset;
       }
 
+      .legend-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       footer {
         padding: 10px 12px;
       }
     }
+
+    @media (max-width: 575.98px) {
+      .legend-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar-brand {
+        font-size: 0.78rem;
+      }
+    }
   </style>
 </head>
-<body>
-  <!-- =========================================================
-       15. STRUKTUR BODY / LAYOUT UTAMA HALAMAN
-       Fungsi:
-       - Membentuk susunan utama halaman WebGIS
-       ========================================================= -->
-  <div class="app-shell">
 
-    <!-- =========================================================
-         15.1 NAVBAR
-         Fungsi:
-         - Menampilkan nama aplikasi dan tombol menu
-         ========================================================= -->
+<body>
+  <div class="app-shell">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid px-3 px-lg-4">
         <a class="navbar-brand" href="#">
-          <i class="fa-solid fa-map-location-dot me-2"></i>WebGIS Permukiman Sleman
+          <i class="fa-solid fa-map-location-dot me-2"></i>WebGIS Fasilitas Umum Sleman
         </a>
         <button class="btn btn-outline-light btn-sm ms-auto" data-bs-toggle="offcanvas" data-bs-target="#sidebarInfo">
           <i class="fa-solid fa-bars me-1"></i>Menu
@@ -668,20 +594,15 @@
       </div>
     </nav>
 
-    <!-- =========================================================
-         15.2 HERO / HEADER UTAMA
-         Fungsi:
-         - Menampilkan judul, deskripsi, dan statistik ringkas
-         ========================================================= -->
     <section class="hero">
       <div class="container-fluid px-3 px-lg-4 hero-wrap">
         <div class="hero-badge">
           <i class="fa-solid fa-layer-group"></i>
-          Visualisasi Persebaran Permukiman Berbasis OSM
+          Visualisasi Fasilitas Umum Berbasis OpenStreetMap
         </div>
 
-        <h1>Peta Persebaran Permukiman di Kabupaten Sleman Berdasarkan Data OpenStreetMap (OSM)</h1>
-        <p>Visualisasi persebaran bangunan permukiman berbasis WebGIS.</p>
+        <h1>Peta Persebaran Fasilitas Umum di Kabupaten Sleman Berdasarkan Data OpenStreetMap (OSM)</h1>
+        <p>WebGIS ini menyajikan fasilitas pendidikan, kesehatan, tempat ibadah, layanan publik, ekonomi, transportasi, ruang publik, serta wisata/budaya.</p>
 
         <div class="hero-stats">
           <div class="hero-stat">
@@ -689,42 +610,31 @@
             <span class="label">Jumlah Feature</span>
           </div>
           <div class="hero-stat">
-            <span class="number">Polygon</span>
+            <span class="number">Point</span>
             <span class="label">Geometri</span>
           </div>
           <div class="hero-stat">
-            <span class="number">OSM House</span>
+            <span class="number">OSM</span>
             <span class="label">Sumber Data</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =========================================================
-         15.3 KONTEN UTAMA
-         Fungsi:
-         - Menampilkan panel peta dan panel informasi
-         ========================================================= -->
     <main class="page-section">
       <div class="container-fluid px-3 px-lg-4">
         <div class="row g-3">
-
-          <!-- =====================================================
-               15.3.1 KOLOM PETA
-               Fungsi:
-               - Menampilkan judul peta, toolbar, kanvas map, dan legenda
-               ===================================================== -->
           <div class="col-lg-8 page-col">
             <div class="panel-card map-card">
               <div class="map-card-header">
                 <div>
                   <h4>Peta</h4>
-                  <p>Tampilan persebaran permukiman Kabupaten Sleman berbasis data OpenStreetMap.</p>
+                  <p>Tampilan persebaran fasilitas umum Kabupaten Sleman berbasis data OpenStreetMap.</p>
                 </div>
 
                 <div class="chip-group">
                   <div class="chip"><i class="fa-solid fa-map me-1"></i>WebGIS</div>
-                  <div class="chip"><i class="fa-solid fa-house me-1"></i>Permukiman</div>
+                  <div class="chip"><i class="fa-solid fa-location-dot me-1"></i>Fasilitas Umum</div>
                   <div class="chip"><i class="fa-solid fa-database me-1"></i>OSM</div>
                 </div>
               </div>
@@ -752,12 +662,24 @@
                 </div>
               </div>
 
+              <div class="filter-tools">
+                <button class="btn btn-primary filter-btn" data-filter="Semua" onclick="filterKategori('Semua')">Semua</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Pendidikan" onclick="filterKategori('Pendidikan')">Pendidikan</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Kesehatan" onclick="filterKategori('Kesehatan')">Kesehatan</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Tempat Ibadah" onclick="filterKategori('Tempat Ibadah')">Tempat Ibadah</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Pemerintahan/Layanan Publik" onclick="filterKategori('Pemerintahan/Layanan Publik')">Layanan Publik</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Ekonomi/Layanan Harian" onclick="filterKategori('Ekonomi/Layanan Harian')">Ekonomi</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Transportasi" onclick="filterKategori('Transportasi')">Transportasi</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Ruang Publik/Olahraga" onclick="filterKategori('Ruang Publik/Olahraga')">Ruang Publik</button>
+                <button class="btn btn-outline-primary filter-btn" data-filter="Wisata/Budaya" onclick="filterKategori('Wisata/Budaya')">Wisata</button>
+              </div>
+
               <div class="map-wrap" id="mapWrapper">
                 <div class="loading-overlay" id="loadingOverlay">
                   <div class="loading-box">
                     <div class="spinner-border text-primary mb-2" role="status"></div>
                     <div class="fw-bold">Memuat peta...</div>
-                    <small class="text-muted">Sedang membaca data layer</small>
+                    <small class="text-muted">Sedang membaca data fasilitas</small>
                   </div>
                 </div>
                 <div id="map"></div>
@@ -765,16 +687,20 @@
 
               <div class="legend-box">
                 <div class="legend-title">Legenda</div>
-                <div><span class="legend-color"></span>Permukiman (OSM House)</div>
+                <div class="legend-grid">
+                  <div class="legend-item"><span class="legend-color" style="background:#2563eb"></span>Pendidikan</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#dc2626"></span>Kesehatan</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#7c3aed"></span>Tempat ibadah</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#0891b2"></span>Layanan publik</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#f97316"></span>Ekonomi</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#16a34a"></span>Transportasi</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#65a30d"></span>Ruang publik</div>
+                  <div class="legend-item"><span class="legend-color" style="background:#db2777"></span>Wisata/budaya</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- =====================================================
-               15.3.2 KOLOM INFORMASI
-               Fungsi:
-               - Menampilkan ringkasan data, status, dan atribut feature
-               ===================================================== -->
           <div class="col-lg-4 page-col">
             <div class="panel-card info-card">
               <div class="stat-block">
@@ -792,6 +718,10 @@
                   <strong id="layerStatus">Belum dimuat</strong>
                 </div>
                 <div class="stat-line">
+                  <span>Filter aktif</span>
+                  <strong id="filterStatus">Semua</strong>
+                </div>
+                <div class="stat-line">
                   <span>Basemap</span>
                   <strong id="basemapStatus">Streets</strong>
                 </div>
@@ -807,38 +737,27 @@
 
               <div class="fixed-info-header">
                 <h5>
-                  <i class="fa-solid fa-house me-2 text-primary"></i>Informasi Permukiman
+                  <i class="fa-solid fa-circle-info me-2 text-primary"></i>Informasi Fasilitas
                 </h5>
                 <button class="btn btn-outline-secondary btn-sm" onclick="resetInfoPanel()">Reset</button>
               </div>
 
               <div class="fixed-info-body" id="fixedInfoBody">
                 <div class="fixed-info-placeholder">
-                  Klik polygon permukiman pada peta untuk menampilkan atribut di panel ini. Panel ini memiliki ukuran tetap sehingga tidak membesar atau mengecil mengikuti isi.
+                  Klik marker fasilitas umum pada peta untuk menampilkan atribut di panel ini.
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </main>
 
-    <!-- =========================================================
-         15.4 FOOTER
-         Fungsi:
-         - Menampilkan identitas dan sumber data
-         ========================================================= -->
     <footer>
-      © 2026 WebGIS Persebaran Permukiman Kabupaten Sleman | Sumber Data: OpenStreetMap (OSM)
+      © 2026 WebGIS Persebaran Fasilitas Umum Kabupaten Sleman | Sumber Data: OpenStreetMap (OSM)
     </footer>
   </div>
 
-  <!-- =========================================================
-       15.5 OFFCANVAS MENU / DASHBOARD PETUNJUK
-       Fungsi:
-       - Menyimpan petunjuk penggunaan dan informasi layer
-       ========================================================= -->
   <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarInfo">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title">
@@ -846,6 +765,7 @@
       </h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
+
     <div class="offcanvas-body">
       <div class="drawer-card">
         <div class="drawer-title">
@@ -855,10 +775,11 @@
         <ol>
           <li>Gunakan scroll mouse untuk memperbesar dan memperkecil peta.</li>
           <li>Klik dan tahan peta untuk menggeser tampilan.</li>
-          <li>Klik polygon permukiman untuk menampilkan atribut pada panel informasi tetap.</li>
+          <li>Klik marker fasilitas umum untuk menampilkan atribut pada panel informasi.</li>
+          <li>Gunakan tombol kategori untuk memfilter jenis fasilitas.</li>
           <li>Gunakan tombol <b>Area Data</b> untuk kembali ke cakupan data.</li>
           <li>Gunakan tombol <b>Lokasi Saya</b> untuk menuju lokasi pengguna.</li>
-          <li>Gunakan tombol <b>Fullscreen</b> jika ingin memperbesar area peta.</li>
+          <li>Gunakan tombol <b>Fullscreen</b> untuk memperbesar area peta.</li>
         </ol>
       </div>
 
@@ -871,87 +792,66 @@
         <div class="mini-info-grid">
           <div class="mini-info-item">
             <small>Nama Layer</small>
-            <strong>House</strong>
+            <strong>Fasilitas Umum Sleman</strong>
           </div>
           <div class="mini-info-item">
             <small>Geometri</small>
-            <strong>Polygon</strong>
+            <strong>Point</strong>
           </div>
           <div class="mini-info-item">
-            <small>Keterangan</small>
-            <strong>Permukiman dari OSM</strong>
+            <small>Sumber</small>
+            <strong>OpenStreetMap</strong>
+          </div>
+          <div class="mini-info-item">
+            <small>Format Data</small>
+            <strong>GeoJSON</strong>
+          </div>
+          <div class="mini-info-item">
+            <small>Path Data</small>
+            <strong>data/fasilitas_umum_sleman.geojson</strong>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- =========================================================
-       16. JAVASCRIPT DAN LOGIKA APLIKASI
-       Fungsi:
-       - Memuat library JS dan seluruh logika WebGIS
-       ========================================================= -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
-  <script src="./OSMPermukimanSleman_1.js"></script>
 
   <script>
-    /* =========================================================
-       16.1 KONFIGURASI AWAL
-       Fungsi:
-       - Menentukan access token Mapbox
-       - Menentukan zoom dan titik awal peta
-       ========================================================= */
     mapboxgl.accessToken = 'pk.eyJ1IjoiZWxsZW5mcmV5amF1emFhIiwiYSI6ImNtbnBvZDd0bjJrMmYyb29vZXhrcmMycXcifQ.K1Mt6Dg-PwyUlsb4NiypmQ';
 
-    const centerAwal = [110.3671, -7.8014];
-    const zoomAwal = 16;
+    const centerAwal = [110.3671, -7.7325];
+    const zoomAwal = 11;
     const zoomLokasiPengguna = 17;
+    const DATA_FASILITAS_URL = './data/fasilitas_umum_sleman.geojson';
 
-    /* =========================================================
-       16.2 REFERENSI ELEMEN HTML
-       Fungsi:
-       - Menghubungkan elemen DOM dengan JavaScript
-       ========================================================= */
     const statusBox = document.getElementById('status');
     const featureCountEl = document.getElementById('featureCount');
     const heroFeatureCountEl = document.getElementById('heroFeatureCount');
     const layerStatusEl = document.getElementById('layerStatus');
+    const filterStatusEl = document.getElementById('filterStatus');
     const basemapStatusEl = document.getElementById('basemapStatus');
     const mousePositionEl = document.getElementById('mousePosition');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const mapWrapper = document.getElementById('mapWrapper');
     const fixedInfoBody = document.getElementById('fixedInfoBody');
     const basemapButtons = document.querySelectorAll('.basemap-btn');
+    const filterButtons = document.querySelectorAll('.filter-btn');
 
-    /* =========================================================
-       16.3 VARIABEL GLOBAL
-       Fungsi:
-       - Menyimpan data, lokasi pengguna, status event, dan feature terpilih
-       ========================================================= */
     let dataGeojsonGlobal = null;
     let lokasiPengguna = null;
     let lokasiAkurasi = null;
     let markerLokasiPengguna = null;
     let eventLayerSudahDipasang = false;
     let selectedFeatureId = null;
+    let filterAktif = 'Semua';
 
-    /* =========================================================
-       16.4 KONFIGURASI BASEMAP
-       Fungsi:
-       - Menyimpan daftar style dasar yang dapat dipilih
-       ========================================================= */
     const basemapStyles = {
       streets: 'mapbox://styles/mapbox/streets-v12',
       satellite: 'mapbox://styles/mapbox/satellite-streets-v12'
     };
 
-    /* =========================================================
-       16.5 FUNGSI STATUS DAN LOADING
-       Fungsi:
-       - Menampilkan pesan status
-       - Menampilkan overlay loading
-       ========================================================= */
     function setStatus(text, isError = false) {
       statusBox.textContent = text;
 
@@ -974,32 +874,230 @@
       }
     }
 
-    /* =========================================================
-       16.6 FUNGSI SPASIAL DASAR
-       Fungsi:
-       - Menghitung batas data
-       - Mengarahkan peta ke area data
-       ========================================================= */
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function tentukanJenisFasilitas(properties) {
+      const amenity = String(properties.amenity || '').toLowerCase();
+      const leisure = String(properties.leisure || '').toLowerCase();
+      const tourism = String(properties.tourism || '').toLowerCase();
+      const office = String(properties.office || '').toLowerCase();
+      const highway = String(properties.highway || '').toLowerCase();
+      const railway = String(properties.railway || '').toLowerCase();
+      const shop = String(properties.shop || '').toLowerCase();
+      const publicTransport = String(properties.public_transport || '').toLowerCase();
+
+      if (['school', 'kindergarten', 'college', 'university', 'library'].includes(amenity)) {
+        return 'Pendidikan';
+      }
+
+      if (['hospital', 'clinic', 'doctors', 'dentist', 'pharmacy'].includes(amenity)) {
+        return 'Kesehatan';
+      }
+
+      if (amenity === 'place_of_worship') {
+        return 'Tempat Ibadah';
+      }
+
+      if (
+        ['townhall', 'courthouse', 'police', 'fire_station', 'post_office', 'community_centre', 'social_facility'].includes(amenity) ||
+        office === 'government'
+      ) {
+        return 'Pemerintahan/Layanan Publik';
+      }
+
+      if (
+        ['marketplace', 'bank', 'atm', 'fuel'].includes(amenity) ||
+        ['supermarket', 'mall', 'department_store', 'convenience'].includes(shop)
+      ) {
+        return 'Ekonomi/Layanan Harian';
+      }
+
+      if (
+        ['bus_station', 'parking', 'bicycle_parking', 'taxi'].includes(amenity) ||
+        highway === 'bus_stop' ||
+        ['station', 'halt'].includes(railway) ||
+        ['station', 'stop_position', 'platform'].includes(publicTransport)
+      ) {
+        return 'Transportasi';
+      }
+
+      if (['park', 'garden', 'playground', 'sports_centre', 'stadium', 'pitch', 'recreation_ground', 'swimming_pool'].includes(leisure)) {
+        return 'Ruang Publik/Olahraga';
+      }
+
+      if (['attraction', 'museum', 'gallery', 'information', 'viewpoint', 'picnic_site'].includes(tourism)) {
+        return 'Wisata/Budaya';
+      }
+
+      return 'Lainnya';
+    }
+
+    function susunAlamat(properties) {
+      const alamat = [
+        properties['addr:street'],
+        properties['addr:village'],
+        properties['addr:subdistrict'],
+        properties['addr:district'],
+        properties['addr:city'],
+        properties['addr:province']
+      ].filter(Boolean);
+
+      if (alamat.length > 0) {
+        return alamat.join(', ');
+      }
+
+      return properties.alamat || 'Kabupaten Sleman';
+    }
+
+    function kumpulkanKoordinat(coords, hasil = []) {
+      if (!Array.isArray(coords)) return hasil;
+
+      if (
+        coords.length >= 2 &&
+        typeof coords[0] === 'number' &&
+        typeof coords[1] === 'number'
+      ) {
+        hasil.push(coords);
+        return hasil;
+      }
+
+      coords.forEach(item => kumpulkanKoordinat(item, hasil));
+      return hasil;
+    }
+
+    function ambilTitikDariGeometry(geometry) {
+      if (!geometry || !geometry.coordinates) return null;
+
+      if (geometry.type === 'Point') {
+        return geometry.coordinates;
+      }
+
+      const koordinat = kumpulkanKoordinat(geometry.coordinates, []);
+
+      if (koordinat.length === 0) return null;
+
+      let totalLng = 0;
+      let totalLat = 0;
+      let jumlah = 0;
+
+      koordinat.forEach(coord => {
+        const lng = Number(coord[0]);
+        const lat = Number(coord[1]);
+
+        if (Number.isFinite(lng) && Number.isFinite(lat)) {
+          totalLng += lng;
+          totalLat += lat;
+          jumlah++;
+        }
+      });
+
+      if (jumlah === 0) return null;
+
+      return [totalLng / jumlah, totalLat / jumlah];
+    }
+
+    function koordinatValid(coord) {
+      if (!Array.isArray(coord) || coord.length < 2) return false;
+
+      const lng = Number(coord[0]);
+      const lat = Number(coord[1]);
+
+      return (
+        Number.isFinite(lng) &&
+        Number.isFinite(lat) &&
+        lng >= 100 &&
+        lng <= 120 &&
+        lat >= -10 &&
+        lat <= -5
+      );
+    }
+
+    function normalisasiGeoJSONFasilitas(dataMentah) {
+      if (!dataMentah || dataMentah.type !== 'FeatureCollection' || !Array.isArray(dataMentah.features)) {
+        throw new Error('Format GeoJSON tidak valid. Data harus berupa FeatureCollection.');
+      }
+
+      const features = [];
+
+      dataMentah.features.forEach((feature, index) => {
+        const propertiesAsli = feature.properties || {};
+        const titik = ambilTitikDariGeometry(feature.geometry);
+
+        if (!koordinatValid(titik)) return;
+
+        const lng = Number(titik[0]);
+        const lat = Number(titik[1]);
+
+        const jenis = tentukanJenisFasilitas(propertiesAsli);
+        const nama = propertiesAsli.name || propertiesAsli.nama || 'Tanpa Nama';
+        const alamat = susunAlamat(propertiesAsli);
+
+        const osmId = propertiesAsli['@id'] || feature.id || propertiesAsli.id || propertiesAsli.osm_id || `feature-${index}`;
+        const osmType = String(osmId).includes('/') ? String(osmId).split('/')[0] : (propertiesAsli.osm_type || '');
+
+        features.push({
+          type: 'Feature',
+          id: index,
+          geometry: {
+            type: 'Point',
+            coordinates: [lng, lat]
+          },
+          properties: {
+            ...propertiesAsli,
+            nama: nama,
+            jenis: jenis,
+            alamat: alamat,
+            longitude: lng,
+            latitude: lat,
+            sumber: 'OpenStreetMap',
+            osm_id: String(osmId),
+            osm_type: String(osmType)
+          }
+        });
+      });
+
+      return {
+        type: 'FeatureCollection',
+        features: features
+      };
+    }
+
+    function dataTerfilter() {
+      if (!dataGeojsonGlobal) {
+        return { type: 'FeatureCollection', features: [] };
+      }
+
+      if (filterAktif === 'Semua') {
+        return dataGeojsonGlobal;
+      }
+
+      return {
+        type: 'FeatureCollection',
+        features: dataGeojsonGlobal.features.filter(feature => {
+          return feature.properties && feature.properties.jenis === filterAktif;
+        })
+      };
+    }
+
     function hitungBoundsDariGeoJSON(data) {
       const bounds = new mapboxgl.LngLatBounds();
 
-      if (!data || !data.features) return bounds;
+      if (!data || !Array.isArray(data.features)) return bounds;
 
       data.features.forEach(feature => {
-        if (!feature.geometry) return;
+        if (!feature.geometry || feature.geometry.type !== 'Point') return;
 
-        const geometry = feature.geometry;
+        const coord = feature.geometry.coordinates;
 
-        if (geometry.type === 'Polygon') {
-          geometry.coordinates.forEach(ring => {
-            ring.forEach(coord => bounds.extend(coord));
-          });
-        } else if (geometry.type === 'MultiPolygon') {
-          geometry.coordinates.forEach(polygon => {
-            polygon.forEach(ring => {
-              ring.forEach(coord => bounds.extend(coord));
-            });
-          });
+        if (koordinatValid(coord)) {
+          bounds.extend(coord);
         }
       });
 
@@ -1007,15 +1105,17 @@
     }
 
     function kembaliKeLokasi() {
-      if (dataGeojsonGlobal) {
-        const bounds = hitungBoundsDariGeoJSON(dataGeojsonGlobal);
+      const data = dataTerfilter();
+
+      if (data && data.features.length > 0) {
+        const bounds = hitungBoundsDariGeoJSON(data);
 
         if (!bounds.isEmpty()) {
           map.fitBounds(bounds, {
-            padding: 30,
+            padding: 40,
             duration: 900
           });
-          setStatus('Status: peta diarahkan ke area data permukiman.');
+          setStatus(`Status: peta diarahkan ke area data ${filterAktif === 'Semua' ? 'fasilitas umum' : filterAktif}.`);
           return;
         }
       }
@@ -1029,13 +1129,6 @@
       setStatus('Status: area data tidak tersedia, peta diarahkan ke titik default.');
     }
 
-    /* =========================================================
-       16.7 FUNGSI GEOLOKASI PENGGUNA
-       Fungsi:
-       - Mengambil lokasi perangkat
-       - Menampilkan marker lokasi
-       - Mengarahkan peta ke lokasi pengguna
-       ========================================================= */
     function dapatkanLokasiPengguna() {
       return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
@@ -1051,11 +1144,6 @@
 
             if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
               reject(new Error('Koordinat lokasi tidak valid.'));
-              return;
-            }
-
-            if (acc && acc > 1500) {
-              reject(new Error(`Lokasi terdeteksi tetapi akurasinya terlalu rendah (±${Math.round(acc)} m). Aktifkan precise location / GPS / matikan VPN.`));
               return;
             }
 
@@ -1111,7 +1199,7 @@
 
           map.flyTo({
             center: coords,
-            zoom: accuracy > 100 ? 16 : 17.5,
+            zoom: accuracy > 100 ? 16 : zoomLokasiPengguna,
             essential: true
           });
 
@@ -1126,11 +1214,6 @@
         });
     }
 
-    /* =========================================================
-       16.8 FUNGSI KONTROL TAMPILAN PETA
-       Fungsi:
-       - Mengaktifkan mode fullscreen peta
-       ========================================================= */
     function toggleFullscreenMap() {
       if (!document.fullscreenElement) {
         mapWrapper.requestFullscreen().catch(err => {
@@ -1141,92 +1224,38 @@
       }
     }
 
-    /* =========================================================
-       16.9 FUNGSI PENGOLAHAN ATRIBUT
-       Fungsi:
-       - Mengambil nilai atribut dari beberapa kemungkinan nama field
-       - Mengamankan HTML
-       - Memformat angka atribut
-       ========================================================= */
-    function ambilNilaiDariBeberapaKey(properties, daftarKey) {
-      for (const key of daftarKey) {
-        if (
-          Object.prototype.hasOwnProperty.call(properties, key) &&
-          properties[key] !== null &&
-          properties[key] !== undefined &&
-          properties[key] !== ''
-        ) {
-          return properties[key];
-        }
-      }
-      return null;
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function formatNilai(label, value) {
-      if (value === null || value === undefined || value === '') return null;
-
-      const angka = Number(value);
-      if (!Number.isNaN(angka) && (label === 'Luas' || label === 'Keliling')) {
-        return angka.toLocaleString('id-ID', {
-          maximumFractionDigits: 6
-        });
-      }
-
-      return value;
-    }
-
-    /* =========================================================
-       16.10 FUNGSI PANEL INFORMASI
-       Fungsi:
-       - Menampilkan atribut feature pada panel kanan
-       - Mengembalikan panel ke kondisi awal
-       ========================================================= */
     function renderInfoPanel(properties) {
       const daftarField = [
-        { label: 'Bangunan', keys: ['Bangunan', 'building'] },
-        { label: 'Kapanewon', keys: ['Kapanewon'] },
-        { label: 'Kalurahan', keys: ['Kalurahan'] },
-        { label: 'Kabupaten', keys: ['Kabupaten'] },
-        { label: 'Provinsi', keys: ['Provinsi'] },
-        { label: 'Negara', keys: ['Negara'] },
-        { label: 'ID OSM', keys: ['ID OSM', 'ID_OSM', 'osm_id'] },
-        { label: 'ID Lengkap', keys: ['ID Lengkap', 'ID_Lengkap', 'full_id'] },
-        { label: 'Tipe OSM', keys: ['Tipe OSM', 'Tipe_OSM', 'osm_type'] },
-        { label: 'Luas', keys: ['Luas'] },
-        { label: 'Keliling', keys: ['Keliling'] }
+        { label: 'Nama Fasilitas', value: properties.nama },
+        { label: 'Jenis Fasilitas', value: properties.jenis },
+        { label: 'Alamat', value: properties.alamat },
+        { label: 'Amenity', value: properties.amenity },
+        { label: 'Leisure', value: properties.leisure },
+        { label: 'Tourism', value: properties.tourism },
+        { label: 'Office', value: properties.office },
+        { label: 'Shop', value: properties.shop },
+        { label: 'Highway', value: properties.highway },
+        { label: 'Railway', value: properties.railway },
+        { label: 'Religion', value: properties.religion },
+        { label: 'Latitude', value: Number(properties.latitude).toFixed(6) },
+        { label: 'Longitude', value: Number(properties.longitude).toFixed(6) },
+        { label: 'ID OSM', value: properties.osm_id },
+        { label: 'Tipe OSM', value: properties.osm_type },
+        { label: 'Sumber Data', value: properties.sumber }
       ];
 
       let rows = '';
 
       daftarField.forEach(field => {
-        const nilai = ambilNilaiDariBeberapaKey(properties, field.keys);
-        if (nilai !== null) {
+        if (field.value !== null && field.value !== undefined && field.value !== '') {
           rows += `
             <tr>
               <th>${escapeHtml(field.label)}</th>
-              <td>${escapeHtml(formatNilai(field.label, nilai))}</td>
+              <td>${escapeHtml(field.value)}</td>
             </tr>
           `;
         }
       });
-
-      if (!rows) {
-        fixedInfoBody.innerHTML = `
-          <div class="fixed-info-placeholder">
-            Tidak ada atribut yang dapat ditampilkan untuk feature ini.
-          </div>
-        `;
-        return;
-      }
 
       fixedInfoBody.innerHTML = `
         <table class="feature-table">
@@ -1239,43 +1268,103 @@
 
     function resetInfoPanel() {
       selectedFeatureId = null;
+
       fixedInfoBody.innerHTML = `
         <div class="fixed-info-placeholder">
-          Klik polygon permukiman pada peta untuk menampilkan atribut di panel ini. Panel ini memiliki ukuran tetap sehingga tidak membesar atau mengecil mengikuti isi.
+          Klik marker fasilitas umum pada peta untuk menampilkan atribut di panel ini.
         </div>
       `;
-      if (map.getLayer('house-selected-line')) {
-        map.setFilter('house-selected-line', ['==', ['id'], -999999]);
+
+      if (map.getLayer('fasilitas-selected')) {
+        map.setFilter('fasilitas-selected', ['==', ['id'], -999999]);
       }
     }
 
-    /* =========================================================
-       16.11 FUNGSI INTERAKSI LAYER
-       Fungsi:
-       - Memasang event klik dan hover
-       - Menambahkan layer GeoJSON ke peta
-       ========================================================= */
+    function buatPopupHTML(properties) {
+      return `
+        <div style="font-size: 13px; line-height: 1.35;">
+          <b>${escapeHtml(properties.nama)}</b><br>
+          <span>${escapeHtml(properties.jenis)}</span><br>
+          <small>${escapeHtml(properties.alamat)}</small><br>
+          <hr style="margin: 6px 0;">
+          <small>
+            Koordinat: ${Number(properties.longitude).toFixed(6)}, ${Number(properties.latitude).toFixed(6)}<br>
+            Sumber: OpenStreetMap
+          </small>
+        </div>
+      `;
+    }
+
+    function terapkanFilterLayer() {
+      if (!map.getLayer('fasilitas-point')) return;
+
+      if (filterAktif === 'Semua') {
+        map.setFilter('fasilitas-point', null);
+      } else {
+        map.setFilter('fasilitas-point', ['==', ['get', 'jenis'], filterAktif]);
+      }
+
+      if (map.getLayer('fasilitas-selected')) {
+        map.setFilter('fasilitas-selected', ['==', ['id'], -999999]);
+      }
+
+      selectedFeatureId = null;
+      filterStatusEl.textContent = filterAktif;
+
+      const jumlah = dataTerfilter().features.length;
+      featureCountEl.textContent = jumlah;
+      heroFeatureCountEl.textContent = jumlah;
+
+      setStatus(`Status: filter "${filterAktif}" aktif. Jumlah feature tampil: ${jumlah}.`);
+      resetInfoPanel();
+    }
+
+    function updateFilterButton() {
+      filterButtons.forEach(btn => {
+        if (btn.dataset.filter === filterAktif) {
+          btn.classList.remove('btn-outline-primary');
+          btn.classList.add('btn-primary');
+        } else {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-outline-primary');
+        }
+      });
+    }
+
+    function filterKategori(kategori) {
+      filterAktif = kategori || 'Semua';
+      updateFilterButton();
+      terapkanFilterLayer();
+    }
+
     function pasangEventLayer() {
       if (eventLayerSudahDipasang) return;
 
-      map.on('click', 'house-fill', function (e) {
+      map.on('click', 'fasilitas-point', function (e) {
         const feature = e.features[0];
         const properties = feature.properties || {};
+
         renderInfoPanel(properties);
 
         if (typeof feature.id !== 'undefined') {
           selectedFeatureId = feature.id;
-          if (map.getLayer('house-selected-line')) {
-            map.setFilter('house-selected-line', ['==', ['id'], selectedFeatureId]);
+
+          if (map.getLayer('fasilitas-selected')) {
+            map.setFilter('fasilitas-selected', ['==', ['id'], selectedFeatureId]);
           }
         }
+
+        new mapboxgl.Popup({ offset: 14 })
+          .setLngLat(feature.geometry.coordinates)
+          .setHTML(buatPopupHTML(properties))
+          .addTo(map);
       });
 
-      map.on('mouseenter', 'house-fill', function () {
+      map.on('mouseenter', 'fasilitas-point', function () {
         map.getCanvas().style.cursor = 'pointer';
       });
 
-      map.on('mouseleave', 'house-fill', function () {
+      map.on('mouseleave', 'fasilitas-point', function () {
         map.getCanvas().style.cursor = '';
       });
 
@@ -1283,60 +1372,68 @@
     }
 
     function tambahkanLayerGeoJSON(data) {
-      if (map.getSource('house')) {
-        if (map.getLayer('house-selected-line')) map.removeLayer('house-selected-line');
-        if (map.getLayer('house-fill')) map.removeLayer('house-fill');
-        if (map.getLayer('house-outline')) map.removeLayer('house-outline');
-        map.removeSource('house');
+      if (map.getSource('fasilitas')) {
+        if (map.getLayer('fasilitas-selected')) map.removeLayer('fasilitas-selected');
+        if (map.getLayer('fasilitas-point')) map.removeLayer('fasilitas-point');
+        map.removeSource('fasilitas');
       }
 
-      map.addSource('house', {
+      map.addSource('fasilitas', {
         type: 'geojson',
         data: data,
         generateId: true
       });
 
       map.addLayer({
-        id: 'house-fill',
-        type: 'fill',
-        source: 'house',
+        id: 'fasilitas-point',
+        type: 'circle',
+        source: 'fasilitas',
         paint: {
-          'fill-color': '#f97316',
-          'fill-opacity': 0.72
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            10, 4,
+            14, 7,
+            17, 10
+          ],
+          'circle-color': [
+            'match',
+            ['get', 'jenis'],
+            'Pendidikan', '#2563eb',
+            'Kesehatan', '#dc2626',
+            'Tempat Ibadah', '#7c3aed',
+            'Pemerintahan/Layanan Publik', '#0891b2',
+            'Ekonomi/Layanan Harian', '#f97316',
+            'Transportasi', '#16a34a',
+            'Ruang Publik/Olahraga', '#65a30d',
+            'Wisata/Budaya', '#db2777',
+            '#6b7280'
+          ],
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 1.5,
+          'circle-opacity': 0.88
         }
       });
 
       map.addLayer({
-        id: 'house-outline',
-        type: 'line',
-        source: 'house',
+        id: 'fasilitas-selected',
+        type: 'circle',
+        source: 'fasilitas',
         paint: {
-          'line-color': '#c2410c',
-          'line-width': 1.1
-        }
-      });
-
-      map.addLayer({
-        id: 'house-selected-line',
-        type: 'line',
-        source: 'house',
-        paint: {
-          'line-color': '#0d6efd',
-          'line-width': 2.8
+          'circle-radius': 12,
+          'circle-color': 'rgba(255,255,255,0)',
+          'circle-stroke-color': '#111827',
+          'circle-stroke-width': 3
         },
         filter: ['==', ['id'], -999999]
       });
 
       layerStatusEl.textContent = 'Tampil';
       pasangEventLayer();
+      terapkanFilterLayer();
     }
 
-    /* =========================================================
-       16.12 FUNGSI MANAJEMEN BASEMAP
-       Fungsi:
-       - Menandai tombol aktif
-       - Mengganti basemap tanpa menghilangkan layer data
-       ========================================================= */
     function updateBasemapButton(mode) {
       basemapButtons.forEach(btn => {
         if (btn.dataset.basemap === mode) {
@@ -1359,12 +1456,10 @@
       map.setStyle(basemapStyles[mode]);
 
       map.once('style.load', function () {
+        eventLayerSudahDipasang = false;
+
         if (dataGeojsonGlobal) {
           tambahkanLayerGeoJSON(dataGeojsonGlobal);
-
-          if (selectedFeatureId !== null && map.getLayer('house-selected-line')) {
-            map.setFilter('house-selected-line', ['==', ['id'], selectedFeatureId]);
-          }
         }
 
         if (lokasiPengguna) {
@@ -1375,11 +1470,6 @@
       });
     }
 
-    /* =========================================================
-       16.13 INISIALISASI MAPBOX
-       Fungsi:
-       - Membuat objek map dan menambahkan kontrol navigasi
-       ========================================================= */
     const map = new mapboxgl.Map({
       container: 'map',
       style: basemapStyles.streets,
@@ -1394,12 +1484,6 @@
       unit: 'metric'
     }), 'bottom-right');
 
-    /* =========================================================
-       16.14 EVENT UMUM PETA
-       Fungsi:
-       - Menangani error
-       - Menampilkan koordinat kursor
-       ========================================================= */
     map.on('error', function (e) {
       console.error('Mapbox error:', e);
     });
@@ -1408,58 +1492,50 @@
       mousePositionEl.textContent = `${e.lngLat.lng.toFixed(6)}, ${e.lngLat.lat.toFixed(6)}`;
     });
 
-    /* =========================================================
-       16.15 EVENT LOAD DAN PEMBACAAN DATA
-       Fungsi:
-       - Membaca data qgis2web
-       - Menambahkan layer ke peta
-       - Mengarahkan tampilan awal ke area data
-       ========================================================= */
-    map.on('load', function () {
+    map.on('load', async function () {
       try {
         showLoading(true);
-        setStatus('Status: membaca data hasil qgis2web...');
+        setStatus('Status: membaca data fasilitas umum dari GeoJSON...');
 
-        if (typeof json_OSMPermukimanSleman_1 === 'undefined') {
-          throw new Error('Variabel qgis2web "json_OSMPermukimanSleman_1" tidak ditemukan.');
+        const response = await fetch(DATA_FASILITAS_URL);
+
+        if (!response.ok) {
+          throw new Error(`File GeoJSON tidak ditemukan atau gagal dibaca: ${DATA_FASILITAS_URL}`);
         }
 
-        const data = json_OSMPermukimanSleman_1;
+        const dataMentah = await response.json();
+        const dataFasilitas = normalisasiGeoJSONFasilitas(dataMentah);
 
-        if (!data || data.type !== 'FeatureCollection') {
-          throw new Error('Data qgis2web tidak valid. Harus berupa FeatureCollection.');
+        if (dataFasilitas.features.length === 0) {
+          throw new Error('GeoJSON berhasil dibaca, tetapi tidak ada feature dengan koordinat valid.');
         }
 
-        if (!Array.isArray(data.features)) {
-          throw new Error('Property "features" tidak ditemukan atau bukan array.');
-        }
+        dataGeojsonGlobal = dataFasilitas;
 
-        if (data.features.length === 0) {
-          throw new Error('Data qgis2web berhasil dibaca, tetapi tidak ada feature di dalamnya.');
-        }
-
-        dataGeojsonGlobal = data;
-        featureCountEl.textContent = data.features.length;
-        heroFeatureCountEl.textContent = data.features.length;
+        featureCountEl.textContent = dataFasilitas.features.length;
+        heroFeatureCountEl.textContent = dataFasilitas.features.length;
         layerStatusEl.textContent = 'Tampil';
 
-        tambahkanLayerGeoJSON(data);
+        tambahkanLayerGeoJSON(dataFasilitas);
         updateBasemapButton('streets');
+        updateFilterButton();
 
-        const bounds = hitungBoundsDariGeoJSON(data);
+        const bounds = hitungBoundsDariGeoJSON(dataFasilitas);
 
         if (!bounds.isEmpty()) {
           map.fitBounds(bounds, {
-            padding: 30,
+            padding: 45,
             duration: 900
           });
-          setStatus('Status: data berhasil dimuat dan peta diarahkan ke area permukiman.');
+
+          setStatus(`Status: ${dataFasilitas.features.length} data fasilitas umum berhasil dimuat.`);
         } else {
           map.flyTo({
             center: centerAwal,
             zoom: zoomAwal,
             essential: true
           });
+
           setStatus('Status: data berhasil dimuat, tetapi bounds kosong. Peta diarahkan ke titik default.', true);
         }
 
