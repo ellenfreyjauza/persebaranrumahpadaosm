@@ -11,17 +11,20 @@
 
   <style>
     :root {
-      --bg: #eef4fb;
-      --panel: #ffffff;
-      --ink: #172033;
+      --bg: #eef3f8;
+      --panel: rgba(255,255,255,0.92);
+      --panel-solid: #ffffff;
+      --ink: #111827;
       --muted: #64748b;
-      --line: rgba(15, 23, 42, 0.09);
-      --primary: #0d6efd;
-      --primary-dark: #0b5ed7;
-      --success: #198754;
-      --danger: #dc3545;
-      --shadow: 0 14px 34px rgba(15, 23, 42, 0.10);
-      --radius: 18px;
+      --line: rgba(15,23,42,0.10);
+      --primary: #2563eb;
+      --primary-2: #0ea5e9;
+      --green: #16a34a;
+      --red: #dc2626;
+      --shadow: 0 20px 55px rgba(15,23,42,0.16);
+      --soft-shadow: 0 10px 30px rgba(15,23,42,0.08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
     }
 
     * { box-sizing: border-box; }
@@ -34,86 +37,93 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Inter, Arial, Helvetica, sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(13, 110, 253, 0.12), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(25, 135, 84, 0.08), transparent 28%),
-        var(--bg);
+        radial-gradient(circle at 15% 10%, rgba(37,99,235,0.18), transparent 28%),
+        radial-gradient(circle at 90% 85%, rgba(14,165,233,0.16), transparent 30%),
+        linear-gradient(135deg, #eef3f8 0%, #f8fafc 100%);
       overflow: hidden;
     }
 
     .app-shell {
       height: 100vh;
       display: grid;
-      grid-template-rows: 54px minmax(0, 1fr);
+      grid-template-rows: 58px minmax(0, 1fr);
       overflow: hidden;
     }
 
     .topbar {
-      background: #111827;
-      color: #ffffff;
+      position: relative;
+      z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 0 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-      z-index: 20;
+      gap: 14px;
+      padding: 0 18px;
+      color: #ffffff;
+      background:
+        linear-gradient(90deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)),
+        #111827;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 12px 30px rgba(15,23,42,0.22);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
       min-width: 0;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      font-size: 0.95rem;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+      font-size: 1rem;
     }
 
-    .brand i {
-      color: #93c5fd;
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      box-shadow: 0 10px 24px rgba(37,99,235,0.35);
+      flex: 0 0 32px;
     }
 
-    .brand span {
+    .brand span:last-child {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: nowrap;
-    }
-
-    .top-actions .btn {
+    .login-admin-btn {
+      border-radius: 999px !important;
       font-size: 0.78rem;
-      border-radius: 999px;
-      font-weight: 700;
-      padding: 6px 10px;
-      white-space: nowrap;
+      font-weight: 800;
+      padding: 7px 12px !important;
+      border-color: rgba(255,255,255,0.5) !important;
+      background: rgba(255,255,255,0.05);
     }
 
     .main-layout {
       min-height: 0;
       display: grid;
-      grid-template-columns: 390px minmax(0, 1fr);
-      gap: 12px;
-      padding: 12px;
+      grid-template-columns: 365px minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px;
       overflow: hidden;
     }
 
     .side-panel,
     .map-panel {
-      background: rgba(255,255,255,0.96);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
       min-height: 0;
       overflow: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.75);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
     }
 
     .side-panel {
@@ -122,85 +132,118 @@
     }
 
     .side-scroll {
-      padding: 14px;
-      overflow-y: auto;
       min-height: 0;
+      overflow-y: auto;
+      padding: 14px;
+      scrollbar-width: thin;
     }
 
-    .map-panel {
-      display: flex;
-      flex-direction: column;
-      padding: 12px;
+    .side-scroll::-webkit-scrollbar {
+      width: 7px;
     }
 
-    .panel-hero {
-      background: linear-gradient(135deg, #0d6efd, #0b5ed7);
-      color: white;
+    .side-scroll::-webkit-scrollbar-thumb {
+      background: rgba(100,116,139,0.35);
+      border-radius: 999px;
+    }
+
+    .project-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
       padding: 16px;
-      border-radius: 15px;
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, rgba(37,99,235,0.98), rgba(14,165,233,0.92)),
+        #2563eb;
+      box-shadow: 0 18px 38px rgba(37,99,235,0.26);
       margin-bottom: 12px;
     }
 
-    .panel-hero .badge-soft {
+    .project-card::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      right: -70px;
+      top: -75px;
+      background: rgba(255,255,255,0.17);
+    }
+
+    .project-kicker {
+      position: relative;
+      z-index: 1;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 9px;
       border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.66rem;
+      font-weight: 800;
       background: rgba(255,255,255,0.16);
       border: 1px solid rgba(255,255,255,0.18);
-      font-size: 0.68rem;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .panel-hero h1 {
-      margin: 0 0 5px 0;
-      font-size: 1.03rem;
-      line-height: 1.25;
-      font-weight: 800;
+    .project-card h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 6px;
+      font-size: 1.08rem;
+      line-height: 1.24;
+      letter-spacing: -0.02em;
+      font-weight: 900;
     }
 
-    .panel-hero p {
+    .project-card p {
+      position: relative;
+      z-index: 1;
       margin: 0;
-      font-size: 0.74rem;
-      line-height: 1.35;
+      font-size: 0.75rem;
+      line-height: 1.4;
       opacity: 0.95;
     }
 
     .metric-grid {
+      position: relative;
+      z-index: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 7px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 13px;
     }
 
     .metric-card {
-      border-radius: 12px;
-      background: rgba(255,255,255,0.14);
+      border-radius: 14px;
+      padding: 9px;
+      background: rgba(255,255,255,0.16);
       border: 1px solid rgba(255,255,255,0.16);
-      padding: 8px;
-      min-height: 56px;
+      min-height: 58px;
     }
 
     .metric-card strong {
       display: block;
-      font-size: 0.95rem;
+      font-size: 1rem;
       line-height: 1.1;
+      font-weight: 900;
     }
 
     .metric-card span {
       display: block;
-      margin-top: 3px;
+      margin-top: 4px;
       font-size: 0.62rem;
       opacity: 0.92;
+      font-weight: 700;
     }
 
-    .card-section {
+    .panel-section {
+      background: var(--panel-solid);
       border: 1px solid var(--line);
-      border-radius: 14px;
-      background: #ffffff;
+      border-radius: var(--radius-md);
       padding: 12px;
       margin-bottom: 11px;
+      box-shadow: var(--soft-shadow);
     }
 
     .section-title {
@@ -208,15 +251,17 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      font-weight: 800;
       font-size: 0.84rem;
+      font-weight: 900;
       margin-bottom: 10px;
+      color: #0f172a;
     }
 
-    .section-title span {
+    .section-title .title-left {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
+      min-width: 0;
     }
 
     .section-title i {
@@ -224,143 +269,73 @@
     }
 
     .status-box {
-      padding: 8px 10px;
-      border-radius: 11px;
+      border-radius: 14px;
+      padding: 9px 11px;
+      margin-bottom: 11px;
       font-size: 0.74rem;
-      background: #d1e7dd;
-      color: #0f5132;
-      border: 1px solid #badbcc;
       line-height: 1.35;
-      margin-bottom: 10px;
+      background: #dcfce7;
+      color: #14532d;
+      border: 1px solid #bbf7d0;
+      box-shadow: var(--soft-shadow);
     }
 
-    .stat-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 6px 0;
-      border-bottom: 1px dashed #e5e7eb;
+    .input-group-sm > .form-control,
+    .form-select-sm {
+      border-radius: 11px !important;
+      font-size: 0.76rem;
+      min-height: 34px;
+    }
+
+    .input-group-sm .btn {
+      border-radius: 11px !important;
       font-size: 0.74rem;
-    }
-
-    .stat-line:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .stat-line strong {
-      color: var(--primary-dark);
-      text-align: right;
-      max-width: 58%;
-      word-break: break-word;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin-bottom: 8px;
-    }
-
-    .summary-pill {
-      border-radius: 11px;
-      border: 1px solid var(--line);
-      background: #f8fafc;
-      padding: 8px;
-    }
-
-    .summary-pill small {
-      display: block;
-      color: var(--muted);
-      font-size: 0.62rem;
-      line-height: 1.1;
-    }
-
-    .summary-pill strong {
-      display: block;
-      margin-top: 4px;
-      font-size: 0.92rem;
-      line-height: 1.1;
-      color: var(--ink);
-    }
-
-    .category-stats {
-      display: grid;
-      gap: 6px;
-      max-height: 170px;
-      overflow-y: auto;
-      padding-right: 2px;
-    }
-
-    .category-stat {
-      display: grid;
-      grid-template-columns: 12px 1fr auto;
-      gap: 7px;
-      align-items: center;
-      padding: 7px 8px;
-      border-radius: 10px;
-      background: #f8fafc;
-      border: 1px solid rgba(15,23,42,0.06);
-      font-size: 0.72rem;
-    }
-
-    .category-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
-    }
-
-    .category-name {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      color: #334155;
-    }
-
-    .category-count {
       font-weight: 800;
-      color: var(--primary-dark);
     }
 
-    .toolbar-inline {
+    .quick-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 7px;
+      gap: 6px;
+      margin-top: 8px;
     }
 
-    .toolbar-inline .btn,
-    .toolbar-inline .form-select,
-    .input-group .btn,
-    .input-group .form-control {
-      font-size: 0.75rem;
-      border-radius: 9px;
-      font-weight: 700;
+    .quick-actions .btn {
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 6px 9px;
     }
 
-    .input-group .form-control {
-      font-weight: 500;
+    .small-tip {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.35;
     }
 
     .layer-grid {
       display: grid;
-      grid-template-columns: 1fr;
       gap: 6px;
     }
 
     .layer-item {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto 10px 1fr;
       align-items: center;
       gap: 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(37,99,235,0.13);
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
       padding: 7px 8px;
-      border: 1px solid rgba(13,110,253,0.18);
-      border-radius: 10px;
-      background: #ffffff;
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: #1f2937;
       cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .layer-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(37,99,235,0.35);
+      box-shadow: 0 8px 16px rgba(15,23,42,0.08);
     }
 
     .layer-item input {
@@ -372,26 +347,182 @@
       width: 10px;
       height: 10px;
       border-radius: 999px;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.18);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.16);
     }
 
     .layer-name {
-      min-width: 0;
+      font-size: 0.74rem;
+      font-weight: 850;
+      color: #1f2937;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    .dropdown-menu {
-      border-radius: 12px;
-      border: 1px solid rgba(15,23,42,0.10);
-      box-shadow: 0 12px 28px rgba(15,23,42,0.14);
-      font-size: 0.78rem;
+    .mini-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px dashed #e5e7eb;
+      font-size: 0.74rem;
     }
 
-    .dropdown-item {
+    .mini-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .mini-row span {
+      color: var(--muted);
       font-weight: 700;
-      padding: 8px 12px;
+    }
+
+    .mini-row strong {
+      color: var(--primary);
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .hidden-meta {
+      display: none;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .summary-pill {
+      border-radius: 14px;
+      padding: 10px;
+      background: linear-gradient(180deg, #f8fafc, #ffffff);
+      border: 1px solid var(--line);
+    }
+
+    .summary-pill small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.63rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .summary-pill strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.98rem;
+      line-height: 1.1;
+      font-weight: 950;
+      color: #0f172a;
+    }
+
+    .category-stats {
+      display: grid;
+      gap: 6px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .category-stat {
+      display: grid;
+      grid-template-columns: 10px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border-radius: 12px;
+      padding: 7px 8px;
+      background: #f8fafc;
+      border: 1px solid rgba(15,23,42,0.06);
+      font-size: 0.72rem;
+    }
+
+    .category-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.16);
+    }
+
+    .category-name {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      color: #334155;
+      font-weight: 750;
+    }
+
+    .category-count {
+      font-weight: 950;
+      color: var(--primary);
+    }
+
+    .fixed-info-body {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .fixed-info-placeholder {
+      padding: 12px;
+      color: var(--muted);
+      line-height: 1.42;
+      font-size: 0.74rem;
+    }
+
+    .feature-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .feature-table tr:not(:last-child) {
+      border-bottom: 1px dashed #e5e7eb;
+    }
+
+    .feature-table th,
+    .feature-table td {
+      padding: 8px 9px;
+      vertical-align: top;
+      font-size: 0.72rem;
+      line-height: 1.28;
+    }
+
+    .feature-table th {
+      width: 40%;
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 900;
+    }
+
+    .feature-table td {
+      color: #111827;
+      word-break: break-word;
+    }
+
+    .info-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      padding: 9px;
+      border-top: 1px solid #e5e7eb;
+      background: #f8fafc;
+    }
+
+    .info-actions .btn {
+      border-radius: 11px;
+      font-size: 0.7rem;
+      font-weight: 850;
+      padding: 7px 8px;
+    }
+
+    .map-panel {
+      display: flex;
+      flex-direction: column;
+      padding: 14px;
     }
 
     .map-header {
@@ -399,50 +530,70 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
-      margin-bottom: 9px;
-    }
-
-    .map-title {
-      min-width: 0;
     }
 
     .map-title h2 {
       margin: 0;
-      font-size: 0.95rem;
-      font-weight: 800;
-      line-height: 1.2;
+      font-size: 1.02rem;
+      font-weight: 950;
+      letter-spacing: -0.02em;
+      color: #0f172a;
     }
 
     .map-title p {
-      margin: 3px 0 0 0;
+      margin: 3px 0 0;
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       line-height: 1.25;
     }
 
     .map-tools {
       display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+      align-items: center;
       justify-content: flex-end;
+      gap: 7px;
+      flex-wrap: wrap;
     }
 
-    .map-tools .btn {
-      font-size: 0.75rem;
-      border-radius: 9px;
-      font-weight: 700;
-      padding: 6px 9px;
+    .control-btn {
+      border-radius: 999px !important;
+      font-size: 0.76rem !important;
+      font-weight: 900 !important;
+      padding: 7px 11px !important;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.07);
+    }
+
+    .dropdown-menu {
+      border: 1px solid rgba(15,23,42,0.10);
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.16);
+      padding: 7px;
+      font-size: 0.78rem;
+    }
+
+    .dropdown-item {
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: 800;
+    }
+
+    .dropdown-item.active,
+    .dropdown-item:active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #ffffff;
     }
 
     .map-wrap {
       position: relative;
-      border-radius: 15px;
-      overflow: hidden;
-      border: 1px solid rgba(15,23,42,0.10);
-      background: #dbeafe;
       flex: 1;
       min-height: 0;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(15,23,42,0.12);
+      background: #dbeafe;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7);
     }
 
     #map {
@@ -458,8 +609,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255,255,255,0.76);
-      backdrop-filter: blur(4px);
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(5px);
       transition: opacity 0.3s ease, visibility 0.3s ease;
     }
 
@@ -470,110 +621,26 @@
     }
 
     .loading-box {
-      background: #fff;
-      border-radius: 14px;
-      padding: 14px 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.14);
-      min-width: 190px;
+      min-width: 210px;
+      border-radius: 18px;
+      background: #ffffff;
+      padding: 16px 18px;
       text-align: center;
-      font-size: 0.8rem;
+      box-shadow: 0 20px 45px rgba(15,23,42,0.18);
+      font-size: 0.82rem;
     }
 
-    .legend-compact {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px 8px;
-      font-size: 0.72rem;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .legend-color {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.18);
-      flex: 0 0 10px;
-    }
-
-    .fixed-info-body {
-      background: #ffffff;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      overflow: hidden;
-    }
-
-    .fixed-info-placeholder {
-      padding: 11px;
-      color: var(--muted);
-      line-height: 1.4;
-      font-size: 0.74rem;
-    }
-
-    .feature-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .feature-table tr:not(:last-child) {
-      border-bottom: 1px dashed #e5e7eb;
-    }
-
-    .feature-table th,
-    .feature-table td {
-      padding: 7px 9px;
-      vertical-align: top;
-      font-size: 0.72rem;
-      line-height: 1.28;
-    }
-
-    .feature-table th {
-      width: 41%;
-      font-weight: 800;
-      color: #374151;
-      background: #f8fafc;
-    }
-
-    .feature-table td {
-      color: #111827;
-      word-break: break-word;
-      background: #ffffff;
-    }
-
-    .info-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      padding: 9px;
-      border-top: 1px solid #e5e7eb;
-      background: #f8fafc;
-    }
-
-    .info-actions .btn {
-      font-size: 0.72rem;
-      padding: 6px 7px;
-      border-radius: 9px;
-      font-weight: 800;
-    }
-
-    .small-tip {
-      color: var(--muted);
-      font-size: 0.7rem;
-      line-height: 1.35;
-      margin-top: 6px;
-    }
-
-    footer {
-      color: #6b7280;
+    .copyright-note {
+      margin-top: 9px;
+      color: #64748b;
       font-size: 0.68rem;
       text-align: center;
-      padding: 8px 0 0;
+    }
+
+    @media (max-width: 1100px) {
+      .main-layout {
+        grid-template-columns: 335px minmax(0, 1fr);
+      }
     }
 
     @media (max-width: 991.98px) {
@@ -589,12 +656,11 @@
 
       .main-layout {
         display: block;
-        overflow: visible;
         padding: 10px;
       }
 
       .side-panel {
-        margin-bottom: 10px;
+        margin-bottom: 12px;
       }
 
       .side-scroll {
@@ -602,11 +668,11 @@
       }
 
       .map-panel {
-        height: 560px;
+        height: 600px;
       }
 
       .map-wrap {
-        min-height: 420px;
+        min-height: 460px;
       }
     }
 
@@ -615,20 +681,17 @@
         padding: 0 10px;
       }
 
-      .brand span {
-        max-width: 180px;
+      .brand span:last-child {
+        max-width: 185px;
       }
 
-      .top-actions .btn {
-        padding: 5px 8px;
+      .login-admin-btn {
+        padding: 6px 9px !important;
       }
 
-      .metric-grid {
-        grid-template-columns: 1fr;
-      }
-
+      .metric-grid,
       .summary-grid,
-      .legend-compact {
+      .info-actions {
         grid-template-columns: 1fr;
       }
 
@@ -647,28 +710,25 @@
   <div class="app-shell">
     <nav class="topbar">
       <div class="brand">
-        <i class="fa-solid fa-map-location-dot"></i>
+        <span class="brand-icon"><i class="fa-solid fa-location-dot"></i></span>
         <span>WebGIS Fasilitas Umum Sleman</span>
       </div>
 
-      <div class="top-actions">
-        <a class="btn btn-outline-light btn-sm" href="login.html">
-          <i class="fa-solid fa-user-shield me-1"></i>Login Admin
-        </a>
-      </div>
+      <a class="btn btn-outline-light btn-sm login-admin-btn" href="login.html">
+        <i class="fa-solid fa-user-shield me-1"></i>Login Admin
+      </a>
     </nav>
 
     <main class="main-layout">
       <aside class="side-panel">
         <div class="side-scroll">
-          <section class="panel-hero">
-            <div class="badge-soft">
-              <i class="fa-solid fa-layer-group"></i>
-              OpenStreetMap · Mapbox · Supabase
+          <section class="project-card">
+            <div class="project-kicker">
+              <i class="fa-solid fa-database"></i>
+              OSM · Mapbox · Supabase
             </div>
-
             <h1>Peta Persebaran Fasilitas Umum Kabupaten Sleman</h1>
-            <p>Dashboard WebGIS untuk menampilkan, mencari, memfilter, dan menavigasi fasilitas umum berbasis data spasial.</p>
+            <p>Dashboard WebGIS untuk eksplorasi, filter, pencarian, navigasi, dan pengelolaan data fasilitas umum.</p>
 
             <div class="metric-grid">
               <div class="metric-card">
@@ -676,12 +736,12 @@
                 <span>Feature tampil</span>
               </div>
               <div class="metric-card">
-                <strong>Point</strong>
-                <span>Geometri</span>
+                <strong>9</strong>
+                <span>Kategori</span>
               </div>
               <div class="metric-card">
-                <strong>Live DB</strong>
-                <span>Supabase</span>
+                <strong>Live</strong>
+                <span>Database</span>
               </div>
             </div>
           </section>
@@ -690,28 +750,26 @@
             Status: menunggu peta dimuat...
           </div>
 
-          <section class="card-section">
+          <section class="panel-section">
             <div class="section-title">
-              <span><i class="fa-solid fa-magnifying-glass"></i>Pencarian dan Sumber</span>
+              <span class="title-left"><i class="fa-solid fa-magnifying-glass"></i>Pencarian</span>
             </div>
 
             <div class="input-group input-group-sm mb-2">
               <input type="text" class="form-control" id="searchInput" placeholder="Cari fasilitas, contoh: puskesmas, masjid, kampus">
-              <button class="btn btn-outline-primary" onclick="cariFasilitas()">
-                <i class="fa-solid fa-magnifying-glass me-1"></i>Cari
-              </button>
+              <button class="btn btn-primary" onclick="cariFasilitas()">Cari</button>
               <button class="btn btn-outline-secondary" onclick="resetPencarian()">Reset</button>
             </div>
 
-            <select class="form-select form-select-sm mb-2" id="sourceFilter" onchange="updateSumberFilter()">
+            <select class="form-select form-select-sm" id="sourceFilter" onchange="updateSumberFilter()">
               <option value="Semua Sumber">Semua Sumber</option>
               <option value="OpenStreetMap">OpenStreetMap</option>
               <option value="Admin WebGIS">Admin WebGIS</option>
             </select>
 
-            <div class="toolbar-inline">
+            <div class="quick-actions">
               <button class="btn btn-outline-primary btn-sm" onclick="refreshDataSupabase()">
-                <i class="fa-solid fa-arrows-rotate me-1"></i>Refresh Data
+                <i class="fa-solid fa-arrows-rotate me-1"></i>Refresh
               </button>
               <button class="btn btn-outline-success btn-sm" onclick="exportDataTampilCSV()">
                 <i class="fa-solid fa-file-csv me-1"></i>Export CSV
@@ -722,14 +780,14 @@
             </div>
 
             <div class="small-tip" id="searchStatus">
-              Tips: cari nama fasilitas, klik marker, lalu buka menu rute untuk navigasi.
+              Cari fasilitas, klik marker, lalu gunakan menu Rute untuk navigasi.
             </div>
           </section>
 
-          <section class="card-section">
+          <section class="panel-section">
             <div class="section-title">
-              <span><i class="fa-solid fa-sliders"></i>Layer Fasilitas</span>
-              <div class="toolbar-inline">
+              <span class="title-left"><i class="fa-solid fa-layer-group"></i>Layer Fasilitas</span>
+              <div class="quick-actions mt-0">
                 <button class="btn btn-primary btn-sm" onclick="pilihSemuaLayer()">Semua</button>
                 <button class="btn btn-outline-secondary btn-sm" onclick="kosongkanLayer()">Kosongkan</button>
               </div>
@@ -759,7 +817,7 @@
               <label class="layer-item">
                 <input class="form-check-input layer-check" type="checkbox" value="Ekonomi/Layanan Harian" checked onchange="updateChecklistLayer()">
                 <span class="layer-dot" style="background:#f97316"></span>
-                <span class="layer-name">Ekonomi/Layanan Harian</span>
+                <span class="layer-name">Ekonomi</span>
               </label>
               <label class="layer-item">
                 <input class="form-check-input layer-check" type="checkbox" value="Transportasi" checked onchange="updateChecklistLayer()">
@@ -769,7 +827,7 @@
               <label class="layer-item">
                 <input class="form-check-input layer-check" type="checkbox" value="Ruang Publik/Olahraga" checked onchange="updateChecklistLayer()">
                 <span class="layer-dot" style="background:#65a30d"></span>
-                <span class="layer-name">Ruang Publik/Olahraga</span>
+                <span class="layer-name">Ruang Publik</span>
               </label>
               <label class="layer-item">
                 <input class="form-check-input layer-check" type="checkbox" value="Wisata/Budaya" checked onchange="updateChecklistLayer()">
@@ -784,36 +842,9 @@
             </div>
           </section>
 
-          <section class="card-section">
+          <section class="panel-section">
             <div class="section-title">
-              <span><i class="fa-solid fa-chart-simple"></i>Ringkasan</span>
-            </div>
-
-            <div class="stat-line">
-              <span>Jumlah feature</span>
-              <strong id="featureCount">0</strong>
-            </div>
-            <div class="stat-line">
-              <span>Layer aktif</span>
-              <strong id="layerStatus">Belum dimuat</strong>
-            </div>
-            <div class="stat-line">
-              <span>Filter aktif</span>
-              <strong id="filterStatus">Semua</strong>
-            </div>
-            <div class="stat-line">
-              <span>Basemap</span>
-              <strong id="basemapStatus">Streets</strong>
-            </div>
-            <div class="stat-line">
-              <span>Koordinat kursor</span>
-              <strong id="mousePosition">Gerakkan kursor...</strong>
-            </div>
-          </section>
-
-          <section class="card-section">
-            <div class="section-title">
-              <span><i class="fa-solid fa-chart-pie"></i>Statistik Kategori</span>
+              <span class="title-left"><i class="fa-solid fa-chart-pie"></i>Statistik</span>
             </div>
 
             <div class="summary-grid">
@@ -830,42 +861,35 @@
             <div class="category-stats" id="categoryStats">
               <div class="small text-muted">Statistik akan muncul setelah data dimuat.</div>
             </div>
+
+            <div class="mini-row mt-2">
+              <span>Jumlah feature</span>
+              <strong id="featureCount">0</strong>
+            </div>
+            <div class="mini-row">
+              <span>Filter aktif</span>
+              <strong id="filterStatus">Semua</strong>
+            </div>
+
+            <div class="hidden-meta">
+              <span id="layerStatus">Belum dimuat</span>
+              <span id="basemapStatus">Streets</span>
+              <span id="mousePosition">Gerakkan kursor...</span>
+            </div>
           </section>
 
-          <section class="card-section">
+          <section class="panel-section">
             <div class="section-title">
-              <span><i class="fa-solid fa-circle-info"></i>Informasi Fasilitas</span>
-              <button class="btn btn-outline-secondary btn-sm" onclick="resetInfoPanel()">Reset</button>
+              <span class="title-left"><i class="fa-solid fa-circle-info"></i>Informasi Fasilitas</span>
+              <button class="btn btn-outline-secondary btn-sm rounded-pill fw-bold" onclick="resetInfoPanel()">Reset</button>
             </div>
 
             <div class="fixed-info-body" id="fixedInfoBody">
               <div class="fixed-info-placeholder">
-                Klik marker fasilitas pada peta untuk melihat atribut lengkap, koordinat, dan tombol navigasi.
+                Klik marker fasilitas pada peta untuk melihat atribut, koordinat, dan tombol navigasi.
               </div>
             </div>
           </section>
-
-          <section class="card-section">
-            <div class="section-title">
-              <span><i class="fa-solid fa-map"></i>Legenda</span>
-            </div>
-
-            <div class="legend-compact">
-              <div class="legend-item"><span class="legend-color" style="background:#2563eb"></span>Pendidikan</div>
-              <div class="legend-item"><span class="legend-color" style="background:#dc2626"></span>Kesehatan</div>
-              <div class="legend-item"><span class="legend-color" style="background:#7c3aed"></span>Tempat Ibadah</div>
-              <div class="legend-item"><span class="legend-color" style="background:#0891b2"></span>Layanan Publik</div>
-              <div class="legend-item"><span class="legend-color" style="background:#f97316"></span>Ekonomi</div>
-              <div class="legend-item"><span class="legend-color" style="background:#16a34a"></span>Transportasi</div>
-              <div class="legend-item"><span class="legend-color" style="background:#65a30d"></span>Ruang Publik</div>
-              <div class="legend-item"><span class="legend-color" style="background:#db2777"></span>Wisata/Budaya</div>
-              <div class="legend-item"><span class="legend-color" style="background:#6b7280"></span>Lainnya</div>
-            </div>
-          </section>
-
-          <footer>
-            © 2026 WebGIS Fasilitas Umum Kabupaten Sleman · Database Supabase
-          </footer>
         </div>
       </aside>
 
@@ -873,19 +897,45 @@
         <div class="map-header">
           <div class="map-title">
             <h2>Muka Peta</h2>
-            <p>Cluster marker akan terurai ketika peta diperbesar. Klik marker untuk melihat informasi fasilitas.</p>
+            <p>Gunakan cluster untuk membaca kepadatan. Perbesar peta untuk melihat titik fasilitas.</p>
           </div>
 
           <div class="map-tools">
-            <button class="btn btn-primary basemap-btn" data-basemap="streets" onclick="gantiBasemap('streets')">
-              <i class="fa-solid fa-road me-1"></i>Streets
-            </button>
-            <button class="btn btn-outline-primary basemap-btn" data-basemap="satellite" onclick="gantiBasemap('satellite')">
-              <i class="fa-solid fa-satellite me-1"></i>Satellite
-            </button>
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle control-btn" type="button" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-map me-1"></i><span id="basemapDropdownLabel">Streets</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <button class="dropdown-item basemap-btn active" data-basemap="streets" type="button" onclick="gantiBasemap('streets')">
+                    <i class="fa-solid fa-road me-2"></i>Streets
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item basemap-btn" data-basemap="outdoors" type="button" onclick="gantiBasemap('outdoors')">
+                    <i class="fa-solid fa-mountain-sun me-2"></i>Outdoors
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item basemap-btn" data-basemap="light" type="button" onclick="gantiBasemap('light')">
+                    <i class="fa-regular fa-sun me-2"></i>Light
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item basemap-btn" data-basemap="dark" type="button" onclick="gantiBasemap('dark')">
+                    <i class="fa-regular fa-moon me-2"></i>Dark
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item basemap-btn" data-basemap="satellite" type="button" onclick="gantiBasemap('satellite')">
+                    <i class="fa-solid fa-satellite me-2"></i>Satellite
+                  </button>
+                </li>
+              </ul>
+            </div>
 
             <div class="dropdown">
-              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <button class="btn btn-outline-secondary dropdown-toggle control-btn" type="button" data-bs-toggle="dropdown">
                 <i class="fa-solid fa-sliders me-1"></i>Tampilan
               </button>
               <ul class="dropdown-menu dropdown-menu-end">
@@ -908,7 +958,7 @@
             </div>
 
             <div class="dropdown">
-              <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <button class="btn btn-success dropdown-toggle control-btn" type="button" data-bs-toggle="dropdown">
                 <i class="fa-solid fa-route me-1"></i>Rute
               </button>
               <ul class="dropdown-menu dropdown-menu-end">
@@ -942,6 +992,10 @@
             </div>
           </div>
           <div id="map"></div>
+        </div>
+
+        <div class="copyright-note">
+          © 2026 WebGIS Fasilitas Umum Kabupaten Sleman · OpenStreetMap · Mapbox · Supabase
         </div>
       </section>
     </main>
@@ -1007,6 +1061,9 @@
 
     const basemapStyles = {
       streets: 'mapbox://styles/mapbox/streets-v12',
+      outdoors: 'mapbox://styles/mapbox/outdoors-v12',
+      light: 'mapbox://styles/mapbox/light-v11',
+      dark: 'mapbox://styles/mapbox/dark-v11',
       satellite: 'mapbox://styles/mapbox/satellite-streets-v12'
     };
 
@@ -1697,7 +1754,7 @@
           .setHTML(buatPopupHTML(properties))
           .addTo(map);
 
-        setStatus(`Status: fasilitas "${selectedNama}" dipilih. Klik Rute WebGIS atau Google Maps untuk navigasi.`);
+        setStatus(`Status: fasilitas "${selectedNama}" dipilih. Buka menu Rute untuk navigasi WebGIS atau Google Maps.`);
       });
 
       map.on('mouseenter', 'clusters', function () {
@@ -1981,13 +2038,22 @@
     }
 
     function updateBasemapButton(mode) {
+      const label = document.getElementById('basemapDropdownLabel');
+      const labelText = {
+        streets: 'Streets',
+        outdoors: 'Outdoors',
+        light: 'Light',
+        dark: 'Dark',
+        satellite: 'Satellite'
+      };
+
+      if (label) label.textContent = labelText[mode] || mode;
+
       basemapButtons.forEach(btn => {
         if (btn.dataset.basemap === mode) {
-          btn.classList.remove('btn-outline-primary');
-          btn.classList.add('btn-primary');
+          btn.classList.add('active');
         } else {
-          btn.classList.remove('btn-primary');
-          btn.classList.add('btn-outline-primary');
+          btn.classList.remove('active');
         }
       });
     }
