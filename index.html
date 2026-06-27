@@ -259,6 +259,106 @@
       cursor: pointer;
     }
 
+    .filter-advanced {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .filter-advanced .advanced-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .summary-pill {
+      border-radius: 10px;
+      border: 1px solid rgba(15,23,42,0.07);
+      background: #ffffff;
+      padding: 7px 8px;
+      min-height: 46px;
+    }
+
+    .summary-pill small {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.62rem;
+      line-height: 1.1;
+    }
+
+    .summary-pill strong {
+      display: block;
+      color: var(--text-dark);
+      font-size: 0.88rem;
+      line-height: 1.2;
+      margin-top: 3px;
+    }
+
+    .category-stats {
+      display: grid;
+      gap: 6px;
+      margin-top: 8px;
+      max-height: 155px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .category-stat {
+      display: grid;
+      grid-template-columns: 12px 1fr auto;
+      gap: 7px;
+      align-items: center;
+      padding: 6px 7px;
+      border-radius: 9px;
+      background: #ffffff;
+      border: 1px solid rgba(15,23,42,0.06);
+      font-size: 0.72rem;
+    }
+
+    .category-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+    }
+
+    .category-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #374151;
+    }
+
+    .category-count {
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .info-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 9px;
+      border-top: 1px solid #e5e7eb;
+      background: #f8fafc;
+    }
+
+    .info-actions .btn {
+      font-size: 0.72rem;
+      padding: 6px 7px;
+    }
+
     .route-note {
       font-size: 0.72rem;
       color: var(--text-muted);
@@ -277,6 +377,18 @@
     .navbar .btn {
       font-size: 0.74rem;
       padding: 6px 9px;
+    }
+
+    .dropdown-menu {
+      border-radius: 10px;
+      border: 1px solid rgba(15,23,42,0.10);
+      box-shadow: 0 10px 24px rgba(15,23,42,0.12);
+      font-size: 0.78rem;
+    }
+
+    .dropdown-item {
+      font-weight: 600;
+      padding: 7px 12px;
     }
 
     .map-wrap {
@@ -577,6 +689,14 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .filter-advanced {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-advanced .advanced-actions {
+        justify-content: flex-start;
+      }
+
       footer {
         padding: 10px 12px;
       }
@@ -664,24 +784,52 @@
                 </div>
 
                 <div class="utility-tools">
-                  <button class="btn btn-outline-secondary" onclick="kembaliKeLokasi()">
-                    <i class="fa-solid fa-map-location-dot me-1"></i>Area Data
-                  </button>
-                  <button class="btn btn-primary" onclick="kembaliKeLokasiPengguna()">
-                    <i class="fa-solid fa-location-crosshairs me-1"></i>Lokasi Saya
-                  </button>
-                  <button class="btn btn-outline-primary" onclick="toggleFullscreenMap()">
-                    <i class="fa-solid fa-expand me-1"></i>Fullscreen
-                  </button>
-                  <button class="btn btn-success" onclick="buatRuteKeFasilitas()">
-                    <i class="fa-solid fa-route me-1"></i>Rute WebGIS
-                  </button>
-                  <button class="btn btn-outline-success" onclick="bukaGoogleMapsRute()">
-                    <i class="fa-brands fa-google me-1"></i>Google Maps
-                  </button>
-                  <button class="btn btn-outline-danger" onclick="hapusRute()">
-                    <i class="fa-solid fa-xmark me-1"></i>Hapus Rute
-                  </button>
+                  <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-sliders me-1"></i>Tampilan
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <button class="dropdown-item" type="button" onclick="kembaliKeLokasi()">
+                          <i class="fa-solid fa-map-location-dot me-2 text-secondary"></i>Area Data
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item" type="button" onclick="kembaliKeLokasiPengguna()">
+                          <i class="fa-solid fa-location-crosshairs me-2 text-primary"></i>Lokasi Saya
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item" type="button" onclick="toggleFullscreenMap()">
+                          <i class="fa-solid fa-expand me-2 text-primary"></i>Fullscreen
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="dropdown">
+                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa-solid fa-route me-1"></i>Rute
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <button class="dropdown-item" type="button" onclick="buatRuteKeFasilitas()">
+                          <i class="fa-solid fa-route me-2 text-success"></i>Rute WebGIS
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item" type="button" onclick="bukaGoogleMapsRute()">
+                          <i class="fa-brands fa-google me-2 text-success"></i>Buka di Google Maps
+                        </button>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                        <button class="dropdown-item text-danger" type="button" onclick="hapusRute()">
+                          <i class="fa-solid fa-xmark me-2"></i>Hapus Rute
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 
@@ -727,7 +875,7 @@
 
                 <div class="w-100 mt-2">
                   <div class="input-group input-group-sm">
-                    <input type="text" class="form-control" id="searchInput" placeholder="Cari nama fasilitas, contoh: Tes Fasilitas Admin">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Cari nama fasilitas, contoh: Universitas, puskesmas, masjid">
                     <button class="btn btn-outline-primary" onclick="cariFasilitas()">
                       <i class="fa-solid fa-magnifying-glass me-1"></i>Cari
                     </button>
@@ -735,8 +883,29 @@
                       Reset
                     </button>
                   </div>
+
+                  <div class="filter-advanced">
+                    <select class="form-select form-select-sm" id="sourceFilter" onchange="updateSumberFilter()">
+                      <option value="Semua Sumber">Semua Sumber</option>
+                      <option value="OpenStreetMap">OpenStreetMap</option>
+                      <option value="Admin WebGIS">Admin WebGIS</option>
+                    </select>
+
+                    <div class="advanced-actions">
+                      <button class="btn btn-outline-primary btn-sm" onclick="refreshDataSupabase()">
+                        <i class="fa-solid fa-arrows-rotate me-1"></i>Refresh Data
+                      </button>
+                      <button class="btn btn-outline-success btn-sm" onclick="exportDataTampilCSV()">
+                        <i class="fa-solid fa-file-csv me-1"></i>Export CSV
+                      </button>
+                      <button class="btn btn-outline-secondary btn-sm" onclick="resetSemuaFilter()">
+                        <i class="fa-solid fa-filter-circle-xmark me-1"></i>Reset Filter
+                      </button>
+                    </div>
+                  </div>
+
                   <div class="small text-muted mt-1" id="searchStatus">
-                    Tips: cari nama fasilitas, klik marker, lalu klik tombol Rute untuk membuat rute dari lokasi Anda.
+                    Tips: cari nama fasilitas, klik marker, lalu buka menu Rute untuk membuat rute WebGIS atau Google Maps.
                   </div>
                 </div>
               </div>
@@ -801,6 +970,26 @@
 
               <div id="status" class="status-box">
                 Status: menunggu peta dimuat...
+              </div>
+
+              <div class="stat-block">
+                <div class="section-title mb-2">
+                  <i class="fa-solid fa-chart-pie"></i>
+                  <span>Statistik Kategori</span>
+                </div>
+                <div class="summary-grid">
+                  <div class="summary-pill">
+                    <small>OpenStreetMap</small>
+                    <strong id="osmCount">0</strong>
+                  </div>
+                  <div class="summary-pill">
+                    <small>Admin WebGIS</small>
+                    <strong id="adminCount">0</strong>
+                  </div>
+                </div>
+                <div class="category-stats" id="categoryStats">
+                  <div class="small text-muted">Statistik akan muncul setelah data dimuat.</div>
+                </div>
               </div>
 
               <div class="fixed-info-header">
@@ -914,6 +1103,10 @@
     const layerChecks = document.querySelectorAll('.layer-check');
     const searchInput = document.getElementById('searchInput');
     const searchStatus = document.getElementById('searchStatus');
+    const sourceFilterEl = document.getElementById('sourceFilter');
+    const categoryStatsEl = document.getElementById('categoryStats');
+    const osmCountEl = document.getElementById('osmCount');
+    const adminCountEl = document.getElementById('adminCount');
 
     let dataGeojsonGlobal = null;
     let lokasiPengguna = null;
@@ -937,10 +1130,23 @@
       'Lainnya'
     ];
     let keywordPencarian = '';
+    let sumberAktif = 'Semua Sumber';
 
     const basemapStyles = {
       streets: 'mapbox://styles/mapbox/streets-v12',
       satellite: 'mapbox://styles/mapbox/satellite-streets-v12'
+    };
+
+    const warnaKategori = {
+      'Pendidikan': '#2563eb',
+      'Kesehatan': '#dc2626',
+      'Tempat Ibadah': '#7c3aed',
+      'Pemerintahan/Layanan Publik': '#0891b2',
+      'Ekonomi/Layanan Harian': '#f97316',
+      'Transportasi': '#16a34a',
+      'Ruang Publik/Olahraga': '#65a30d',
+      'Wisata/Budaya': '#db2777',
+      'Lainnya': '#6b7280'
     };
 
     function setStatus(text, isError = false) {
@@ -1099,17 +1305,30 @@
           const jenisMasuk = layerAktif.includes(p.jenis);
           const nama = String(p.nama || '').toLowerCase();
           const alamat = String(p.alamat || '').toLowerCase();
-          const keywordMasuk = !keyword || nama.includes(keyword) || alamat.includes(keyword);
+          const sumber = String(p.sumber || '').toLowerCase();
 
-          return jenisMasuk && keywordMasuk;
+          const keywordMasuk = !keyword || nama.includes(keyword) || alamat.includes(keyword);
+          const sumberMasuk =
+            sumberAktif === 'Semua Sumber' ||
+            (sumberAktif === 'OpenStreetMap' && sumber.includes('openstreetmap')) ||
+            (sumberAktif === 'Admin WebGIS' && sumber.includes('admin'));
+
+          return jenisMasuk && keywordMasuk && sumberMasuk;
         })
       };
     }
 
     function labelFilterAktif() {
-      if (layerAktif.length === 0) return 'Tidak ada layer';
-      if (layerAktif.length === 9) return keywordPencarian ? 'Semua + pencarian' : 'Semua';
-      return `${layerAktif.length} layer aktif${keywordPencarian ? ' + pencarian' : ''}`;
+      const bagian = [];
+
+      if (layerAktif.length === 0) bagian.push('Tidak ada layer');
+      else if (layerAktif.length === 9) bagian.push('Semua layer');
+      else bagian.push(`${layerAktif.length} layer aktif`);
+
+      if (sumberAktif !== 'Semua Sumber') bagian.push(sumberAktif);
+      if (keywordPencarian) bagian.push('pencarian');
+
+      return bagian.join(' + ');
     }
 
     function hitungBoundsDariGeoJSON(data) {
@@ -1260,7 +1479,17 @@
         }
       });
 
-      fixedInfoBody.innerHTML = `<table class="feature-table"><tbody>${rows}</tbody></table>`;
+      fixedInfoBody.innerHTML = `
+        <table class="feature-table"><tbody>${rows}</tbody></table>
+        <div class="info-actions">
+          <button class="btn btn-success btn-sm" onclick="bukaGoogleMapsRute()">
+            <i class="fa-brands fa-google me-1"></i>Google Maps
+          </button>
+          <button class="btn btn-outline-primary btn-sm" onclick="salinKoordinatTerpilih()">
+            <i class="fa-solid fa-copy me-1"></i>Salin Koordinat
+          </button>
+        </div>
+      `;
     }
 
     function resetInfoPanel() {
@@ -1323,6 +1552,7 @@
       heroFeatureCountEl.textContent = jumlah;
 
       resetInfoPanel();
+      renderCategoryStats();
       setStatus(`Status: ${labelFilterAktif()} aktif. Jumlah feature tampil: ${jumlah}.`);
     }
 
@@ -1387,8 +1617,166 @@
     function resetPencarian() {
       keywordPencarian = '';
       searchInput.value = '';
-      searchStatus.textContent = 'Tips: cari nama fasilitas, klik marker, lalu klik tombol Rute untuk membuat rute dari lokasi Anda.';
+      searchStatus.textContent = 'Tips: cari nama fasilitas, klik marker, lalu buka menu Rute untuk membuat rute WebGIS atau Google Maps.';
       terapkanFilterLayer();
+    }
+
+    function updateSumberFilter() {
+      sumberAktif = sourceFilterEl.value || 'Semua Sumber';
+      terapkanFilterLayer();
+    }
+
+    function resetSemuaFilter() {
+      layerChecks.forEach(check => check.checked = true);
+      layerAktif = Array.from(layerChecks).map(check => check.value);
+      keywordPencarian = '';
+      sumberAktif = 'Semua Sumber';
+      searchInput.value = '';
+      sourceFilterEl.value = 'Semua Sumber';
+      searchStatus.textContent = 'Filter dikembalikan ke kondisi awal. Semua layer dan semua sumber data ditampilkan.';
+      terapkanFilterLayer();
+      kembaliKeLokasi();
+    }
+
+    function renderCategoryStats() {
+      if (!categoryStatsEl) return;
+
+      const data = dataTerfilter();
+      const semuaData = dataGeojsonGlobal ? dataGeojsonGlobal.features : [];
+
+      const countByJenis = {};
+      data.features.forEach(feature => {
+        const jenis = (feature.properties && feature.properties.jenis) || 'Lainnya';
+        countByJenis[jenis] = (countByJenis[jenis] || 0) + 1;
+      });
+
+      const osmCount = semuaData.filter(feature => {
+        const sumber = String((feature.properties && feature.properties.sumber) || '').toLowerCase();
+        return sumber.includes('openstreetmap');
+      }).length;
+
+      const adminCount = semuaData.filter(feature => {
+        const sumber = String((feature.properties && feature.properties.sumber) || '').toLowerCase();
+        return sumber.includes('admin');
+      }).length;
+
+      osmCountEl.textContent = osmCount.toLocaleString('id-ID');
+      adminCountEl.textContent = adminCount.toLocaleString('id-ID');
+
+      const urutan = [
+        'Pendidikan',
+        'Kesehatan',
+        'Tempat Ibadah',
+        'Pemerintahan/Layanan Publik',
+        'Ekonomi/Layanan Harian',
+        'Transportasi',
+        'Ruang Publik/Olahraga',
+        'Wisata/Budaya',
+        'Lainnya'
+      ];
+
+      const rows = urutan
+        .filter(jenis => (countByJenis[jenis] || 0) > 0)
+        .map(jenis => `
+          <div class="category-stat">
+            <span class="category-dot" style="background:${warnaKategori[jenis] || '#6b7280'}"></span>
+            <span class="category-name">${escapeHtml(jenis)}</span>
+            <span class="category-count">${(countByJenis[jenis] || 0).toLocaleString('id-ID')}</span>
+          </div>
+        `)
+        .join('');
+
+      categoryStatsEl.innerHTML = rows || '<div class="small text-muted">Tidak ada data pada filter aktif.</div>';
+    }
+
+    function escapeCsv(value) {
+      const text = String(value ?? '').replace(/"/g, '""');
+      return `"${text}"`;
+    }
+
+    function exportDataTampilCSV() {
+      const data = dataTerfilter();
+
+      if (!data.features.length) {
+        setStatus('Tidak ada data yang dapat diekspor pada filter aktif.', true);
+        return;
+      }
+
+      const header = ['id', 'nama', 'jenis', 'alamat', 'latitude', 'longitude', 'sumber', 'osm_id'];
+      const rows = [header.join(',')];
+
+      data.features.forEach(feature => {
+        const p = feature.properties || {};
+        rows.push([
+          p.id || '',
+          p.nama || '',
+          p.jenis || '',
+          p.alamat || '',
+          p.latitude || '',
+          p.longitude || '',
+          p.sumber || '',
+          p.osm_id || ''
+        ].map(escapeCsv).join(','));
+      });
+
+      const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = 'data_fasilitas_umum_sleman_terfilter.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(url);
+      setStatus(`Status: ${data.features.length} data terfilter berhasil diekspor ke CSV.`);
+    }
+
+    async function refreshDataSupabase() {
+      try {
+        showLoading(true);
+        setStatus('Status: memperbarui data dari Supabase...');
+
+        const rows = await ambilDataSupabase();
+        dataGeojsonGlobal = rowsToGeoJSON(rows);
+
+        if (!dataGeojsonGlobal.features.length) {
+          throw new Error('Database berhasil dibaca, tetapi tidak ada data valid.');
+        }
+
+        if (map.getSource('fasilitas')) {
+          map.getSource('fasilitas').setData(dataTerfilter());
+          terapkanFilterLayer();
+        } else {
+          tambahkanLayerGeoJSON(dataGeojsonGlobal);
+        }
+
+        kembaliKeLokasi();
+        setStatus(`Status: data berhasil diperbarui. Total ${dataGeojsonGlobal.features.length} feature tersedia.`);
+        showLoading(false);
+      } catch (error) {
+        console.error('Refresh error:', error);
+        setStatus('Gagal memperbarui data: ' + error.message, true);
+        showLoading(false);
+      }
+    }
+
+    function salinKoordinatTerpilih() {
+      if (!selectedKoordinat) {
+        setStatus('Pilih salah satu fasilitas dulu untuk menyalin koordinat.', true);
+        return;
+      }
+
+      const teks = `${Number(selectedKoordinat[1]).toFixed(6)}, ${Number(selectedKoordinat[0]).toFixed(6)}`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(teks)
+          .then(() => setStatus(`Status: koordinat ${teks} berhasil disalin.`))
+          .catch(() => setStatus('Gagal menyalin koordinat ke clipboard.', true));
+      } else {
+        setStatus(`Koordinat terpilih: ${teks}`);
+      }
     }
 
     searchInput.addEventListener('keydown', function(e) {
