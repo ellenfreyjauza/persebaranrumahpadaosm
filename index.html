@@ -674,7 +674,10 @@
                     <i class="fa-solid fa-expand me-1"></i>Fullscreen
                   </button>
                   <button class="btn btn-success" onclick="buatRuteKeFasilitas()">
-                    <i class="fa-solid fa-route me-1"></i>Rute
+                    <i class="fa-solid fa-route me-1"></i>Rute WebGIS
+                  </button>
+                  <button class="btn btn-outline-success" onclick="bukaGoogleMapsRute()">
+                    <i class="fa-brands fa-google me-1"></i>Google Maps
                   </button>
                   <button class="btn btn-outline-danger" onclick="hapusRute()">
                     <i class="fa-solid fa-xmark me-1"></i>Hapus Rute
@@ -844,7 +847,8 @@
           <li>Gunakan tombol kategori untuk memfilter jenis fasilitas.</li>
           <li>Gunakan tombol <b>Area Data</b> untuk kembali ke cakupan data.</li>
           <li>Gunakan tombol <b>Lokasi Saya</b> untuk menuju lokasi pengguna.</li>
-          <li>Klik marker fasilitas, lalu gunakan tombol <b>Rute</b> untuk membuat rute dari lokasi pengguna ke fasilitas terpilih.</li>
+          <li>Klik marker fasilitas, lalu gunakan tombol <b>Rute WebGIS</b> untuk membuat rute di dalam peta.</li>
+          <li>Gunakan tombol <b>Google Maps</b> untuk membuka rute menuju fasilitas terpilih pada Google Maps.</li>
           <li>Klik <b>Login Admin</b> untuk masuk ke halaman pengelolaan data.</li>
         </ol>
       </div>
@@ -1287,6 +1291,13 @@
             Koordinat: ${Number(properties.longitude).toFixed(6)}, ${Number(properties.latitude).toFixed(6)}<br>
             Sumber: ${escapeHtml(properties.sumber || 'OpenStreetMap')}
           </small>
+          <div style="margin-top: 8px;">
+            <button
+              onclick="bukaGoogleMapsKoordinat(${Number(properties.latitude)}, ${Number(properties.longitude)})"
+              style="border: 0; border-radius: 7px; padding: 6px 8px; background: #198754; color: white; font-size: 12px; cursor: pointer;">
+              Buka Rute Google Maps
+            </button>
+          </div>
         </div>
       `;
     }
@@ -1425,7 +1436,7 @@
           .setHTML(buatPopupHTML(properties))
           .addTo(map);
 
-        setStatus(`Status: fasilitas "${selectedNama}" dipilih. Klik tombol Rute untuk membuat rute dari lokasi Anda.`);
+        setStatus(`Status: fasilitas "${selectedNama}" dipilih. Klik Rute WebGIS atau Google Maps untuk navigasi.`);
       });
 
       map.on('mouseenter', 'clusters', function () {
@@ -1595,6 +1606,39 @@
           'line-opacity': 0.9
         }
       });
+    }
+
+    function bukaGoogleMapsKoordinat(lat, lng) {
+      const latitude = Number(lat);
+      const longitude = Number(lng);
+
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        setStatus('Koordinat tujuan tidak valid untuk dibuka di Google Maps.', true);
+        return;
+      }
+
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving`;
+      window.open(url, '_blank');
+    }
+
+    function bukaGoogleMapsRute() {
+      if (!selectedKoordinat) {
+        setStatus('Pilih atau cari salah satu fasilitas dulu sebelum membuka rute Google Maps.', true);
+        return;
+      }
+
+      const lng = Number(selectedKoordinat[0]);
+      const lat = Number(selectedKoordinat[1]);
+
+      if (!koordinatValid(lng, lat)) {
+        setStatus('Koordinat fasilitas terpilih tidak valid.', true);
+        return;
+      }
+
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+      window.open(url, '_blank');
+
+      setStatus(`Status: rute menuju "${selectedNama || 'fasilitas terpilih'}" dibuka di Google Maps.`);
     }
 
     async function buatRuteKeFasilitas() {
