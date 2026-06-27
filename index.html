@@ -259,6 +259,12 @@
       cursor: pointer;
     }
 
+    .route-note {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
     .btn, .btn-sm {
       border-radius: 9px !important;
       font-weight: 600;
@@ -667,6 +673,12 @@
                   <button class="btn btn-outline-primary" onclick="toggleFullscreenMap()">
                     <i class="fa-solid fa-expand me-1"></i>Fullscreen
                   </button>
+                  <button class="btn btn-success" onclick="buatRuteKeFasilitas()">
+                    <i class="fa-solid fa-route me-1"></i>Rute
+                  </button>
+                  <button class="btn btn-outline-danger" onclick="hapusRute()">
+                    <i class="fa-solid fa-xmark me-1"></i>Hapus Rute
+                  </button>
                 </div>
               </div>
 
@@ -721,7 +733,7 @@
                     </button>
                   </div>
                   <div class="small text-muted mt-1" id="searchStatus">
-                    Tips: pakai pencarian untuk menemukan data dummy yang baru ditambahkan admin.
+                    Tips: cari nama fasilitas, klik marker, lalu klik tombol Rute untuk membuat rute dari lokasi Anda.
                   </div>
                 </div>
               </div>
@@ -832,6 +844,7 @@
           <li>Gunakan tombol kategori untuk memfilter jenis fasilitas.</li>
           <li>Gunakan tombol <b>Area Data</b> untuk kembali ke cakupan data.</li>
           <li>Gunakan tombol <b>Lokasi Saya</b> untuk menuju lokasi pengguna.</li>
+          <li>Klik marker fasilitas, lalu gunakan tombol <b>Rute</b> untuk membuat rute dari lokasi pengguna ke fasilitas terpilih.</li>
           <li>Klik <b>Login Admin</b> untuk masuk ke halaman pengelolaan data.</li>
         </ol>
       </div>
@@ -904,6 +917,10 @@
     let markerLokasiPengguna = null;
     let eventLayerSudahDipasang = false;
     let selectedFeatureId = null;
+    let selectedUid = null;
+    let selectedKoordinat = null;
+    let selectedNama = null;
+    let ruteGeojsonGlobal = null;
     let layerAktif = [
       'Pendidikan',
       'Kesehatan',
@@ -1012,6 +1029,8 @@
         const nama = row.nama || 'Tanpa Nama';
         const alamat = row.alamat || 'Kabupaten Sleman';
 
+        const uid = `fasilitas-${row.id || index}`;
+
         features.push({
           type: 'Feature',
           id: index,
@@ -1021,6 +1040,7 @@
           },
           properties: {
             ...row,
+            uid: uid,
             nama: nama,
             jenis: jenis,
             alamat: alamat,
@@ -1241,6 +1261,9 @@
 
     function resetInfoPanel() {
       selectedFeatureId = null;
+      selectedUid = null;
+      selectedKoordinat = null;
+      selectedNama = null;
 
       fixedInfoBody.innerHTML = `
         <div class="fixed-info-placeholder">
@@ -1249,7 +1272,7 @@
       `;
 
       if (map.getLayer('fasilitas-selected')) {
-        map.setFilter('fasilitas-selected', ['==', ['id'], -999999]);
+        map.setFilter('fasilitas-selected', ['==', ['get', 'uid'], '']);
       }
     }
 
@@ -1268,38 +1291,23 @@
       `;
     }
 
-    function buatFilterExpression() {
-      const ekspresiLayer = ['in', ['get', 'jenis'], ['literal', layerAktif]];
-      const keyword = keywordPencarian.toLowerCase().trim();
-
-      if (!keyword) {
-        return ekspresiLayer;
-      }
-
-      return [
-        'all',
-        ekspresiLayer,
-        [
-          'any',
-          ['in', keyword, ['downcase', ['to-string', ['get', 'nama']]]],
-          ['in', keyword, ['downcase', ['to-string', ['get', 'alamat']]]]
-        ]
-      ];
-    }
-
     function terapkanFilterLayer() {
-      if (!map.getLayer('fasilitas-point')) return;
+      if (!map.getSource('fasilitas')) return;
 
-      map.setFilter('fasilitas-point', buatFilterExpression());
+      const data = dataTerfilter();
+      map.getSource('fasilitas').setData(data);
 
       if (map.getLayer('fasilitas-selected')) {
-        map.setFilter('fasilitas-selected', ['==', ['id'], -999999]);
+        map.setFilter('fasilitas-selected', ['==', ['get', 'uid'], '']);
       }
 
       selectedFeatureId = null;
+      selectedUid = null;
+      selectedKoordinat = null;
+      selectedNama = null;
       filterStatusEl.textContent = labelFilterAktif();
 
-      const jumlah = dataTerfilter().features.length;
+      const jumlah = data.features.length;
       featureCountEl.textContent = jumlah;
       heroFeatureCountEl.textContent = jumlah;
 
@@ -1342,6 +1350,11 @@
       const coord = feature.geometry.coordinates;
       const p = feature.properties || {};
 
+      selectedFeatureId = feature.id;
+      selectedUid = p.uid || '';
+      selectedKoordinat = coord;
+      selectedNama = p.nama || 'Fasilitas terpilih';
+
       map.flyTo({
         center: coord,
         zoom: 17,
@@ -1351,7 +1364,7 @@
       renderInfoPanel(p);
 
       if (map.getLayer('fasilitas-selected')) {
-        map.setFilter('fasilitas-selected', ['==', ['id'], feature.id]);
+        map.setFilter('fasilitas-selected', ['==', ['get', 'uid'], selectedUid]);
       }
 
       new mapboxgl.Popup({ offset: 14 })
@@ -1363,7 +1376,7 @@
     function resetPencarian() {
       keywordPencarian = '';
       searchInput.value = '';
-      searchStatus.textContent = 'Tips: pakai pencarian untuk menemukan data dummy yang baru ditambahkan admin.';
+      searchStatus.textContent = 'Tips: cari nama fasilitas, klik marker, lalu klik tombol Rute untuk membuat rute dari lokasi Anda.';
       terapkanFilterLayer();
     }
 
@@ -1376,24 +1389,51 @@
     function pasangEventLayer() {
       if (eventLayerSudahDipasang) return;
 
+      map.on('click', 'clusters', function (e) {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        if (!features.length) return;
+
+        const clusterId = features[0].properties.cluster_id;
+
+        map.getSource('fasilitas').getClusterExpansionZoom(clusterId, function (err, zoom) {
+          if (err) return;
+
+          map.easeTo({
+            center: features[0].geometry.coordinates,
+            zoom: zoom
+          });
+        });
+      });
+
       map.on('click', 'fasilitas-point', function (e) {
         const feature = e.features[0];
         const properties = feature.properties || {};
 
         renderInfoPanel(properties);
 
-        if (typeof feature.id !== 'undefined') {
-          selectedFeatureId = feature.id;
+        selectedFeatureId = feature.id;
+        selectedUid = properties.uid || '';
+        selectedKoordinat = feature.geometry.coordinates;
+        selectedNama = properties.nama || 'Fasilitas terpilih';
 
-          if (map.getLayer('fasilitas-selected')) {
-            map.setFilter('fasilitas-selected', ['==', ['id'], selectedFeatureId]);
-          }
+        if (map.getLayer('fasilitas-selected')) {
+          map.setFilter('fasilitas-selected', ['==', ['get', 'uid'], selectedUid]);
         }
 
         new mapboxgl.Popup({ offset: 14 })
           .setLngLat(feature.geometry.coordinates)
           .setHTML(buatPopupHTML(properties))
           .addTo(map);
+
+        setStatus(`Status: fasilitas "${selectedNama}" dipilih. Klik tombol Rute untuk membuat rute dari lokasi Anda.`);
+      });
+
+      map.on('mouseenter', 'clusters', function () {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'clusters', function () {
+        map.getCanvas().style.cursor = '';
       });
 
       map.on('mouseenter', 'fasilitas-point', function () {
@@ -1407,25 +1447,90 @@
       eventLayerSudahDipasang = true;
     }
 
-    function tambahkanLayerGeoJSON(data) {
+    function hapusLayerFasilitasJikaAda() {
+      const daftarLayer = [
+        'fasilitas-selected',
+        'fasilitas-point',
+        'cluster-count',
+        'clusters'
+      ];
+
+      daftarLayer.forEach(layerId => {
+        if (map.getLayer(layerId)) map.removeLayer(layerId);
+      });
+
       if (map.getSource('fasilitas')) {
-        if (map.getLayer('fasilitas-selected')) map.removeLayer('fasilitas-selected');
-        if (map.getLayer('fasilitas-point')) map.removeLayer('fasilitas-point');
         map.removeSource('fasilitas');
       }
+    }
+
+    function tambahkanLayerGeoJSON(data) {
+      hapusLayerFasilitasJikaAda();
 
       map.addSource('fasilitas', {
         type: 'geojson',
-        data: data,
+        data: dataTerfilter(),
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 48,
         generateId: true
+      });
+
+      map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'fasilitas',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#60a5fa',
+            100, '#2563eb',
+            750, '#1d4ed8'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            16,
+            100, 22,
+            750, 30
+          ],
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 2,
+          'circle-opacity': 0.92
+        }
+      });
+
+      map.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'fasilitas',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': ['get', 'point_count_abbreviated'],
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
       });
 
       map.addLayer({
         id: 'fasilitas-point',
         type: 'circle',
         source: 'fasilitas',
+        filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 4, 14, 7, 17, 10],
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            10, 4,
+            14, 6,
+            17, 9
+          ],
           'circle-color': [
             'match',
             ['get', 'jenis'],
@@ -1441,7 +1546,7 @@
           ],
           'circle-stroke-color': '#ffffff',
           'circle-stroke-width': 1.5,
-          'circle-opacity': 0.88
+          'circle-opacity': 0.9
         }
       });
 
@@ -1449,18 +1554,125 @@
         id: 'fasilitas-selected',
         type: 'circle',
         source: 'fasilitas',
+        filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'uid'], '']],
         paint: {
-          'circle-radius': 12,
+          'circle-radius': 13,
           'circle-color': 'rgba(255,255,255,0)',
           'circle-stroke-color': '#111827',
           'circle-stroke-width': 3
-        },
-        filter: ['==', ['id'], -999999]
+        }
       });
 
       layerStatusEl.textContent = 'Tampil';
       pasangEventLayer();
       terapkanFilterLayer();
+    }
+
+    function tambahLayerRuteJikaAda() {
+      if (!ruteGeojsonGlobal) return;
+
+      if (map.getSource('rute')) {
+        map.getSource('rute').setData(ruteGeojsonGlobal);
+        return;
+      }
+
+      map.addSource('rute', {
+        type: 'geojson',
+        data: ruteGeojsonGlobal
+      });
+
+      map.addLayer({
+        id: 'rute-line',
+        type: 'line',
+        source: 'rute',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#ef4444',
+          'line-width': 5,
+          'line-opacity': 0.9
+        }
+      });
+    }
+
+    async function buatRuteKeFasilitas() {
+      if (!selectedKoordinat) {
+        setStatus('Pilih atau cari salah satu fasilitas dulu sebelum membuat rute.', true);
+        return;
+      }
+
+      try {
+        showLoading(true);
+        setStatus('Status: mengambil lokasi pengguna untuk membuat rute...');
+
+        const lokasi = await dapatkanLokasiPengguna();
+        tampilkanMarkerLokasiPengguna(lokasi.coords);
+
+        const start = lokasi.coords;
+        const tujuan = selectedKoordinat;
+
+        const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${tujuan[0]},${tujuan[1]}?geometries=geojson&overview=full&steps=false&access_token=${mapboxgl.accessToken}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error('Gagal mengambil data rute dari Mapbox Directions API.');
+        }
+
+        const data = await response.json();
+
+        if (!data.routes || !data.routes.length) {
+          throw new Error('Rute tidak ditemukan.');
+        }
+
+        const route = data.routes[0];
+
+        ruteGeojsonGlobal = {
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: route.geometry,
+              properties: {
+                nama_tujuan: selectedNama || 'Fasilitas terpilih',
+                jarak_meter: route.distance,
+                durasi_detik: route.duration
+              }
+            }
+          ]
+        };
+
+        tambahLayerRuteJikaAda();
+
+        const bounds = new mapboxgl.LngLatBounds();
+        route.geometry.coordinates.forEach(coord => bounds.extend(coord));
+
+        map.fitBounds(bounds, {
+          padding: 60,
+          duration: 900
+        });
+
+        const jarakKm = (route.distance / 1000).toFixed(2);
+        const durasiMenit = Math.round(route.duration / 60);
+
+        setStatus(`Status: rute ke "${selectedNama}" berhasil dibuat. Jarak ${jarakKm} km, estimasi ${durasiMenit} menit.`);
+        showLoading(false);
+
+      } catch (error) {
+        console.error('Route error:', error);
+        setStatus('Gagal membuat rute: ' + error.message, true);
+        showLoading(false);
+      }
+    }
+
+    function hapusRute() {
+      ruteGeojsonGlobal = null;
+
+      if (map.getLayer('rute-line')) map.removeLayer('rute-line');
+      if (map.getSource('rute')) map.removeSource('rute');
+
+      setStatus('Status: rute dihapus dari peta.');
     }
 
     function updateBasemapButton(mode) {
@@ -1494,6 +1706,8 @@
         if (lokasiPengguna) {
           tampilkanMarkerLokasiPengguna(lokasiPengguna);
         }
+
+        tambahLayerRuteJikaAda();
 
         showLoading(false);
       });
