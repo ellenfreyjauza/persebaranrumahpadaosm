@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Admin WebGIS</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --primary-dark: #0b5ed7;
+      --soft-bg: #f4f7fb;
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      --border-soft: 1px solid rgba(15, 23, 42, 0.08);
+      --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text-dark);
+      background:
+        radial-gradient(circle at top left, rgba(13,110,253,0.08), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(249,115,22,0.08), transparent 24%),
+        var(--soft-bg);
+    }
+
+    .navbar {
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .page-wrap {
+      padding: 16px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(13,110,253,0.96), rgba(11,94,215,0.92));
+      color: #fff;
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 14px;
+    }
+
+    .hero-card h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 5px;
+      line-height: 1.3;
+    }
+
+    .hero-card p {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      opacity: 0.95;
+    }
+
+    .panel-card {
+      background: rgba(255,255,255,0.98);
+      border-radius: 16px;
+      border: var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+
+    .section-title i {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: rgba(13,110,253,0.12);
+      color: var(--primary);
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 10px;
+      font-size: 0.84rem;
+      padding: 8px 10px;
+    }
+
+    .btn {
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    .status-box {
+      display: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      margin-bottom: 12px;
+    }
+
+    .status-success {
+      display: block;
+      background: #d1e7dd;
+      color: #0f5132;
+      border: 1px solid #badbcc;
+    }
+
+    .status-error {
+      display: block;
+      background: #f8d7da;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+    }
+
+    .small-muted {
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      line-height: 1.35;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(15,23,42,0.08);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    table {
+      margin-bottom: 0 !important;
+      font-size: 0.78rem;
+      min-width: 980px;
+    }
+
+    th {
+      white-space: nowrap;
+      background: #f8fafc !important;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 5px;
+      flex-wrap: nowrap;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #eef4ff;
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 0.76rem;
+      border: 1px solid rgba(13,110,253,0.1);
+    }
+
+    @media (max-width: 767.98px) {
+      .page-wrap {
+        padding: 10px;
+      }
+
+      .hero-card,
+      .panel-card {
+        border-radius: 13px;
+        padding: 13px;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="navbar-brand" href="#">
+        <i class="fa-solid fa-user-gear me-2"></i>Dashboard Admin WebGIS
+      </a>
+
+      <div class="ms-auto d-flex gap-2">
+        <a href="index.html" class="btn btn-outline-light btn-sm">
+          <i class="fa-solid fa-map me-1"></i>WebGIS
+        </a>
+        <button class="btn btn-danger btn-sm" onclick="logoutAdmin()">
+          <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="hero-card">
+      <h1>Pengelolaan Data Fasilitas Umum Kabupaten Sleman</h1>
+      <p>Halaman ini digunakan admin untuk menambah, membaca, mengubah, dan menghapus data fasilitas umum yang tersimpan pada database Supabase.</p>
+    </div>
+
+    <div id="statusBox" class="status-box"></div>
+
+    <div class="row g-3">
+      <div class="col-lg-4">
+        <div class="panel-card">
+          <div class="section-title">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span id="formTitle">Tambah Data Fasilitas</span>
+          </div>
+
+          <form id="fasilitasForm">
+            <input type="hidden" id="dataId">
+
+            <div class="mb-2">
+              <label for="nama">Nama Fasilitas</label>
+              <input type="text" class="form-control" id="nama" placeholder="Contoh: Puskesmas Sleman" required>
+            </div>
+
+            <div class="mb-2">
+              <label for="jenis">Jenis Fasilitas</label>
+              <select class="form-select" id="jenis" required>
+                <option value="">Pilih jenis fasilitas</option>
+                <option value="Pendidikan">Pendidikan</option>
+                <option value="Kesehatan">Kesehatan</option>
+                <option value="Tempat Ibadah">Tempat Ibadah</option>
+                <option value="Pemerintahan/Layanan Publik">Pemerintahan/Layanan Publik</option>
+                <option value="Ekonomi/Layanan Harian">Ekonomi/Layanan Harian</option>
+                <option value="Transportasi">Transportasi</option>
+                <option value="Ruang Publik/Olahraga">Ruang Publik/Olahraga</option>
+                <option value="Wisata/Budaya">Wisata/Budaya</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+
+            <div class="mb-2">
+              <label for="alamat">Alamat</label>
+              <input type="text" class="form-control" id="alamat" placeholder="Contoh: Kabupaten Sleman">
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label for="latitude">Latitude</label>
+                <input type="number" step="any" class="form-control" id="latitude" placeholder="-7.75" required>
+              </div>
+              <div class="col-6">
+                <label for="longitude">Longitude</label>
+                <input type="number" step="any" class="form-control" id="longitude" placeholder="110.36" required>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label for="amenity">Amenity</label>
+                <input type="text" class="form-control" id="amenity" placeholder="school/clinic">
+              </div>
+              <div class="col-6">
+                <label for="leisure">Leisure</label>
+                <input type="text" class="form-control" id="leisure" placeholder="park">
+              </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label for="tourism">Tourism</label>
+                <input type="text" class="form-control" id="tourism" placeholder="museum">
+              </div>
+              <div class="col-6">
+                <label for="office">Office</label>
+                <input type="text" class="form-control" id="office" placeholder="government">
+              </div>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label for="shop">Shop</label>
+                <input type="text" class="form-control" id="shop" placeholder="supermarket">
+              </div>
+              <div class="col-6">
+                <label for="religion">Religion</label>
+                <input type="text" class="form-control" id="religion" placeholder="muslim/christian">
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <label for="osm_id">ID OSM</label>
+              <input type="text" class="form-control" id="osm_id" placeholder="node/123 atau data-admin">
+            </div>
+
+            <div class="mb-3">
+              <label for="keterangan">Keterangan</label>
+              <textarea class="form-control" id="keterangan" rows="2" placeholder="Keterangan tambahan"></textarea>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary" id="saveBtn">
+                <i class="fa-solid fa-floppy-disk me-1"></i>Simpan Data
+              </button>
+              <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                <i class="fa-solid fa-rotate-left me-1"></i>Reset Form
+              </button>
+            </div>
+          </form>
+
+          <div class="small-muted mt-3">
+            Data koordinat disimpan dalam bentuk latitude dan longitude sehingga dapat digunakan sebagai data geospasial pada WebGIS.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="panel-card">
+          <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap mb-3">
+            <div>
+              <div class="section-title mb-1">
+                <i class="fa-solid fa-table"></i>
+                <span>Daftar Data Fasilitas</span>
+              </div>
+              <div class="small-muted">
+                Menampilkan data dari tabel <b>fasilitas</b> pada Supabase.
+              </div>
+            </div>
+
+            <div class="top-actions">
+              <span class="badge-soft">
+                <i class="fa-solid fa-database"></i>
+                <span id="jumlahData">0 data</span>
+              </span>
+              <button class="btn btn-outline-primary btn-sm" onclick="loadDataFasilitas()">
+                <i class="fa-solid fa-arrows-rotate me-1"></i>Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nama</th>
+                  <th>Jenis</th>
+                  <th>Alamat</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                  <th>Sumber</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="dataTableBody">
+                <tr>
+                  <td colspan="8" class="text-center text-muted py-4">Memuat data...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="small-muted mt-3">
+            Tombol edit akan memindahkan data ke form kiri. Tombol hapus akan menghapus data dari database.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = 'https://xwwahjpsuesslsbuvwqu.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_J12MvST2YuOaoLYDgbuilQ_qLOOBFfA';
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const statusBox = document.getElementById('statusBox');
+    const form = document.getElementById('fasilitasForm');
+    const tableBody = document.getElementById('dataTableBody');
+    const jumlahData = document.getElementById('jumlahData');
+    const saveBtn = document.getElementById('saveBtn');
+    const formTitle = document.getElementById('formTitle');
+
+    let dataFasilitasGlobal = [];
+
+    function cekLogin() {
+      const loginStatus = localStorage.getItem('webgis_admin_login');
+      if (loginStatus !== 'true') {
+        window.location.href = 'login.html';
+      }
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('webgis_admin_login');
+      localStorage.removeItem('webgis_admin_username');
+      localStorage.removeItem('webgis_admin_role');
+      window.location.href = 'login.html';
+    }
+
+    function showStatus(message, type = 'success') {
+      statusBox.textContent = message;
+      statusBox.className = 'status-box ' + (type === 'error' ? 'status-error' : 'status-success');
+
+      setTimeout(() => {
+        statusBox.className = 'status-box';
+        statusBox.textContent = '';
+      }, 4500);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getFormData() {
+      return {
+        nama: document.getElementById('nama').value.trim(),
+        jenis: document.getElementById('jenis').value.trim(),
+        alamat: document.getElementById('alamat').value.trim() || 'Kabupaten Sleman',
+        latitude: Number(document.getElementById('latitude').value),
+        longitude: Number(document.getElementById('longitude').value),
+        amenity: document.getElementById('amenity').value.trim() || null,
+        leisure: document.getElementById('leisure').value.trim() || null,
+        tourism: document.getElementById('tourism').value.trim() || null,
+        office: document.getElementById('office').value.trim() || null,
+        shop: document.getElementById('shop').value.trim() || null,
+        religion: document.getElementById('religion').value.trim() || null,
+        osm_id: document.getElementById('osm_id').value.trim() || 'data-admin',
+        osm_type: 'admin',
+        sumber: 'Admin WebGIS',
+        keterangan: document.getElementById('keterangan').value.trim() || null
+      };
+    }
+
+    function validasiData(data) {
+      if (!data.nama) return 'Nama fasilitas wajib diisi.';
+      if (!data.jenis) return 'Jenis fasilitas wajib dipilih.';
+      if (!Number.isFinite(data.latitude)) return 'Latitude wajib berupa angka.';
+      if (!Number.isFinite(data.longitude)) return 'Longitude wajib berupa angka.';
+
+      if (data.latitude < -10 || data.latitude > -5) {
+        return 'Latitude tampak tidak sesuai wilayah DIY/Jawa Tengah bagian selatan.';
+      }
+
+      if (data.longitude < 100 || data.longitude > 120) {
+        return 'Longitude tampak tidak sesuai wilayah Indonesia bagian Jawa.';
+      }
+
+      return null;
+    }
+
+    function isiForm(data) {
+      document.getElementById('dataId').value = data.id || '';
+      document.getElementById('nama').value = data.nama || '';
+      document.getElementById('jenis').value = data.jenis || '';
+      document.getElementById('alamat').value = data.alamat || '';
+      document.getElementById('latitude').value = data.latitude || '';
+      document.getElementById('longitude').value = data.longitude || '';
+      document.getElementById('amenity').value = data.amenity || '';
+      document.getElementById('leisure').value = data.leisure || '';
+      document.getElementById('tourism').value = data.tourism || '';
+      document.getElementById('office').value = data.office || '';
+      document.getElementById('shop').value = data.shop || '';
+      document.getElementById('religion').value = data.religion || '';
+      document.getElementById('osm_id').value = data.osm_id || '';
+      document.getElementById('keterangan').value = data.keterangan || '';
+
+      formTitle.textContent = 'Edit Data Fasilitas';
+      saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i>Update Data';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+      form.reset();
+      document.getElementById('dataId').value = '';
+      formTitle.textContent = 'Tambah Data Fasilitas';
+      saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i>Simpan Data';
+    }
+
+    async function loadDataFasilitas() {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="8" class="text-center text-muted py-4">Memuat data...</td>
+        </tr>
+      `;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('fasilitas')
+          .select('*')
+          .order('id', { ascending: false })
+          .limit(500);
+
+        if (error) {
+          console.error('Load data error:', error);
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="8" class="text-center text-danger py-4">Gagal memuat data: ${escapeHtml(error.message)}</td>
+            </tr>
+          `;
+          jumlahData.textContent = '0 data';
+          return;
+        }
+
+        dataFasilitasGlobal = data || [];
+        jumlahData.textContent = `${dataFasilitasGlobal.length} data`;
+
+        if (dataFasilitasGlobal.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">Belum ada data fasilitas di database.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        let rows = '';
+
+        dataFasilitasGlobal.forEach(item => {
+          rows += `
+            <tr>
+              <td>${escapeHtml(item.id)}</td>
+              <td>${escapeHtml(item.nama)}</td>
+              <td>${escapeHtml(item.jenis)}</td>
+              <td>${escapeHtml(item.alamat || '-')}</td>
+              <td>${Number(item.latitude).toFixed(6)}</td>
+              <td>${Number(item.longitude).toFixed(6)}</td>
+              <td>${escapeHtml(item.sumber || '-')}</td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn btn-warning btn-sm" onclick="editData(${item.id})">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="hapusData(${item.id})">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tableBody.innerHTML = rows;
+
+      } catch (err) {
+        console.error('Load data fatal error:', err);
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center text-danger py-4">Terjadi error: ${escapeHtml(err.message)}</td>
+          </tr>
+        `;
+        jumlahData.textContent = '0 data';
+      }
+    }
+
+    function editData(id) {
+      const data = dataFasilitasGlobal.find(item => Number(item.id) === Number(id));
+      if (!data) {
+        showStatus('Data tidak ditemukan.', 'error');
+        return;
+      }
+
+      isiForm(data);
+    }
+
+    async function hapusData(id) {
+      const konfirmasi = confirm('Yakin ingin menghapus data ini dari database?');
+      if (!konfirmasi) return;
+
+      try {
+        const { error } = await supabaseClient
+          .from('fasilitas')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          console.error('Delete error:', error);
+          showStatus('Gagal menghapus data: ' + error.message, 'error');
+          return;
+        }
+
+        showStatus('Data berhasil dihapus.');
+        await loadDataFasilitas();
+        resetForm();
+
+      } catch (err) {
+        console.error('Delete fatal error:', err);
+        showStatus('Terjadi error saat menghapus data: ' + err.message, 'error');
+      }
+    }
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const id = document.getElementById('dataId').value;
+      const formData = getFormData();
+      const pesanValidasi = validasiData(formData);
+
+      if (pesanValidasi) {
+        showStatus(pesanValidasi, 'error');
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...';
+
+      try {
+        if (id) {
+          const { error } = await supabaseClient
+            .from('fasilitas')
+            .update(formData)
+            .eq('id', id);
+
+          if (error) {
+            console.error('Update error:', error);
+            showStatus('Gagal update data: ' + error.message, 'error');
+            return;
+          }
+
+          showStatus('Data berhasil diperbarui.');
+        } else {
+          const { error } = await supabaseClient
+            .from('fasilitas')
+            .insert([formData]);
+
+          if (error) {
+            console.error('Insert error:', error);
+            showStatus('Gagal menambah data: ' + error.message, 'error');
+            return;
+          }
+
+          showStatus('Data berhasil ditambahkan.');
+        }
+
+        resetForm();
+        await loadDataFasilitas();
+
+      } catch (err) {
+        console.error('Save fatal error:', err);
+        showStatus('Terjadi error saat menyimpan data: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = document.getElementById('dataId').value
+          ? '<i class="fa-solid fa-floppy-disk me-1"></i>Update Data'
+          : '<i class="fa-solid fa-floppy-disk me-1"></i>Simpan Data';
+      }
+    });
+
+    cekLogin();
+    loadDataFasilitas();
+  </script>
+</body>
+</html>
