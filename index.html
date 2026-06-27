@@ -247,6 +247,18 @@
       border-top: 1px dashed rgba(15,23,42,0.12);
     }
 
+    .filter-tools label.btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin: 0;
+    }
+
+    .filter-tools .form-check-input {
+      margin-top: 0;
+      cursor: pointer;
+    }
+
     .btn, .btn-sm {
       border-radius: 9px !important;
       font-weight: 600;
@@ -659,16 +671,59 @@
               </div>
 
               <div class="filter-tools">
-                <button class="btn btn-primary filter-btn" data-filter="Semua" onclick="filterKategori('Semua')">Semua</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Pendidikan" onclick="filterKategori('Pendidikan')">Pendidikan</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Kesehatan" onclick="filterKategori('Kesehatan')">Kesehatan</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Tempat Ibadah" onclick="filterKategori('Tempat Ibadah')">Tempat Ibadah</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Pemerintahan/Layanan Publik" onclick="filterKategori('Pemerintahan/Layanan Publik')">Layanan Publik</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Ekonomi/Layanan Harian" onclick="filterKategori('Ekonomi/Layanan Harian')">Ekonomi</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Transportasi" onclick="filterKategori('Transportasi')">Transportasi</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Ruang Publik/Olahraga" onclick="filterKategori('Ruang Publik/Olahraga')">Ruang Publik</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Wisata/Budaya" onclick="filterKategori('Wisata/Budaya')">Wisata</button>
-                <button class="btn btn-outline-primary filter-btn" data-filter="Lainnya" onclick="filterKategori('Lainnya')">Lainnya</button>
+                <div class="w-100 mb-1 small text-muted fw-bold">
+                  Checklist layer fasilitas:
+                </div>
+
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Pendidikan" checked onchange="updateChecklistLayer()">Pendidikan
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Kesehatan" checked onchange="updateChecklistLayer()">Kesehatan
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Tempat Ibadah" checked onchange="updateChecklistLayer()">Tempat Ibadah
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Pemerintahan/Layanan Publik" checked onchange="updateChecklistLayer()">Layanan Publik
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Ekonomi/Layanan Harian" checked onchange="updateChecklistLayer()">Ekonomi
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Transportasi" checked onchange="updateChecklistLayer()">Transportasi
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Ruang Publik/Olahraga" checked onchange="updateChecklistLayer()">Ruang Publik
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Wisata/Budaya" checked onchange="updateChecklistLayer()">Wisata
+                </label>
+                <label class="btn btn-outline-primary btn-sm">
+                  <input class="form-check-input me-1 layer-check" type="checkbox" value="Lainnya" checked onchange="updateChecklistLayer()">Lainnya
+                </label>
+
+                <button class="btn btn-primary btn-sm" onclick="pilihSemuaLayer()">
+                  <i class="fa-solid fa-check-double me-1"></i>Semua
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="kosongkanLayer()">
+                  <i class="fa-solid fa-eye-slash me-1"></i>Kosongkan
+                </button>
+
+                <div class="w-100 mt-2">
+                  <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Cari nama fasilitas, contoh: Tes Fasilitas Admin">
+                    <button class="btn btn-outline-primary" onclick="cariFasilitas()">
+                      <i class="fa-solid fa-magnifying-glass me-1"></i>Cari
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="resetPencarian()">
+                      Reset
+                    </button>
+                  </div>
+                  <div class="small text-muted mt-1" id="searchStatus">
+                    Tips: pakai pencarian untuk menemukan data dummy yang baru ditambahkan admin.
+                  </div>
+                </div>
               </div>
 
               <div class="map-wrap" id="mapWrapper">
@@ -839,7 +894,9 @@
     const mapWrapper = document.getElementById('mapWrapper');
     const fixedInfoBody = document.getElementById('fixedInfoBody');
     const basemapButtons = document.querySelectorAll('.basemap-btn');
-    const filterButtons = document.querySelectorAll('.filter-btn');
+    const layerChecks = document.querySelectorAll('.layer-check');
+    const searchInput = document.getElementById('searchInput');
+    const searchStatus = document.getElementById('searchStatus');
 
     let dataGeojsonGlobal = null;
     let lokasiPengguna = null;
@@ -847,7 +904,18 @@
     let markerLokasiPengguna = null;
     let eventLayerSudahDipasang = false;
     let selectedFeatureId = null;
-    let filterAktif = 'Semua';
+    let layerAktif = [
+      'Pendidikan',
+      'Kesehatan',
+      'Tempat Ibadah',
+      'Pemerintahan/Layanan Publik',
+      'Ekonomi/Layanan Harian',
+      'Transportasi',
+      'Ruang Publik/Olahraga',
+      'Wisata/Budaya',
+      'Lainnya'
+    ];
+    let keywordPencarian = '';
 
     const basemapStyles = {
       streets: 'mapbox://styles/mapbox/streets-v12',
@@ -997,14 +1065,27 @@
 
     function dataTerfilter() {
       if (!dataGeojsonGlobal) return { type: 'FeatureCollection', features: [] };
-      if (filterAktif === 'Semua') return dataGeojsonGlobal;
+
+      const keyword = keywordPencarian.toLowerCase().trim();
 
       return {
         type: 'FeatureCollection',
         features: dataGeojsonGlobal.features.filter(feature => {
-          return feature.properties && feature.properties.jenis === filterAktif;
+          const p = feature.properties || {};
+          const jenisMasuk = layerAktif.includes(p.jenis);
+          const nama = String(p.nama || '').toLowerCase();
+          const alamat = String(p.alamat || '').toLowerCase();
+          const keywordMasuk = !keyword || nama.includes(keyword) || alamat.includes(keyword);
+
+          return jenisMasuk && keywordMasuk;
         })
       };
+    }
+
+    function labelFilterAktif() {
+      if (layerAktif.length === 0) return 'Tidak ada layer';
+      if (layerAktif.length === 9) return keywordPencarian ? 'Semua + pencarian' : 'Semua';
+      return `${layerAktif.length} layer aktif${keywordPencarian ? ' + pencarian' : ''}`;
     }
 
     function hitungBoundsDariGeoJSON(data) {
@@ -1032,7 +1113,7 @@
 
         if (!bounds.isEmpty()) {
           map.fitBounds(bounds, { padding: 40, duration: 900 });
-          setStatus(`Status: peta diarahkan ke area data ${filterAktif === 'Semua' ? 'fasilitas umum' : filterAktif}.`);
+          setStatus(`Status: peta diarahkan ke area data ${labelFilterAktif()}.`);
           return;
         }
       }
@@ -1187,47 +1268,110 @@
       `;
     }
 
+    function buatFilterExpression() {
+      const ekspresiLayer = ['in', ['get', 'jenis'], ['literal', layerAktif]];
+      const keyword = keywordPencarian.toLowerCase().trim();
+
+      if (!keyword) {
+        return ekspresiLayer;
+      }
+
+      return [
+        'all',
+        ekspresiLayer,
+        [
+          'any',
+          ['in', keyword, ['downcase', ['to-string', ['get', 'nama']]]],
+          ['in', keyword, ['downcase', ['to-string', ['get', 'alamat']]]]
+        ]
+      ];
+    }
+
     function terapkanFilterLayer() {
       if (!map.getLayer('fasilitas-point')) return;
 
-      if (filterAktif === 'Semua') {
-        map.setFilter('fasilitas-point', null);
-      } else {
-        map.setFilter('fasilitas-point', ['==', ['get', 'jenis'], filterAktif]);
-      }
+      map.setFilter('fasilitas-point', buatFilterExpression());
 
       if (map.getLayer('fasilitas-selected')) {
         map.setFilter('fasilitas-selected', ['==', ['id'], -999999]);
       }
 
       selectedFeatureId = null;
-      filterStatusEl.textContent = filterAktif;
+      filterStatusEl.textContent = labelFilterAktif();
 
       const jumlah = dataTerfilter().features.length;
       featureCountEl.textContent = jumlah;
       heroFeatureCountEl.textContent = jumlah;
 
       resetInfoPanel();
-      setStatus(`Status: filter "${filterAktif}" aktif. Jumlah feature tampil: ${jumlah}.`);
+      setStatus(`Status: ${labelFilterAktif()} aktif. Jumlah feature tampil: ${jumlah}.`);
     }
 
-    function updateFilterButton() {
-      filterButtons.forEach(btn => {
-        if (btn.dataset.filter === filterAktif) {
-          btn.classList.remove('btn-outline-primary');
-          btn.classList.add('btn-primary');
-        } else {
-          btn.classList.remove('btn-primary');
-          btn.classList.add('btn-outline-primary');
-        }
-      });
-    }
+    function updateChecklistLayer() {
+      layerAktif = Array.from(layerChecks)
+        .filter(check => check.checked)
+        .map(check => check.value);
 
-    function filterKategori(kategori) {
-      filterAktif = kategori || 'Semua';
-      updateFilterButton();
       terapkanFilterLayer();
     }
+
+    function pilihSemuaLayer() {
+      layerChecks.forEach(check => check.checked = true);
+      updateChecklistLayer();
+    }
+
+    function kosongkanLayer() {
+      layerChecks.forEach(check => check.checked = false);
+      updateChecklistLayer();
+    }
+
+    function cariFasilitas() {
+      keywordPencarian = searchInput.value.trim();
+      terapkanFilterLayer();
+
+      const hasil = dataTerfilter();
+
+      if (hasil.features.length === 0) {
+        searchStatus.textContent = `Tidak ada hasil untuk pencarian "${keywordPencarian}".`;
+        return;
+      }
+
+      searchStatus.textContent = `Ditemukan ${hasil.features.length} data. Peta diarahkan ke hasil pertama.`;
+
+      const feature = hasil.features[0];
+      const coord = feature.geometry.coordinates;
+      const p = feature.properties || {};
+
+      map.flyTo({
+        center: coord,
+        zoom: 17,
+        essential: true
+      });
+
+      renderInfoPanel(p);
+
+      if (map.getLayer('fasilitas-selected')) {
+        map.setFilter('fasilitas-selected', ['==', ['id'], feature.id]);
+      }
+
+      new mapboxgl.Popup({ offset: 14 })
+        .setLngLat(coord)
+        .setHTML(buatPopupHTML(p))
+        .addTo(map);
+    }
+
+    function resetPencarian() {
+      keywordPencarian = '';
+      searchInput.value = '';
+      searchStatus.textContent = 'Tips: pakai pencarian untuk menemukan data dummy yang baru ditambahkan admin.';
+      terapkanFilterLayer();
+    }
+
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        cariFasilitas();
+      }
+    });
 
     function pasangEventLayer() {
       if (eventLayerSudahDipasang) return;
@@ -1394,7 +1538,7 @@
 
         tambahkanLayerGeoJSON(dataFasilitas);
         updateBasemapButton('streets');
-        updateFilterButton();
+        terapkanFilterLayer();
 
         const bounds = hitungBoundsDariGeoJSON(dataFasilitas);
 
